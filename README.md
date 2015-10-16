@@ -1,14 +1,6 @@
 Database-System-Design_miniSQL
 ==============================
-This is the project on Database System Design course, authored by Xinyuan Lu, Tingyu Bi and me. If you have any question about the project, please email us:
 
-Jiaquan Yin (SmilENow) : troysmilenow@gmail.com
-
-Xinyuan Lu (sasame-yuki) : sasameyuki94@gmail.com
-
-Tingyu Bi : sophie4869@gmail.com
-
-===
 
 And Here is the requirment of miniSQL project:
 
@@ -311,11 +303,3 @@ DB Files指构成数据库的所有数据文件，主要由记录数据文件、
 6.	多人协作完成一个系统，但最后系统无法联合运行，则按各人完成他负责的模块进行处理；
 7.	若程序编写工作基本完成，但无法运行或无法进行测试，则根据程序质量给验收得分为“中、及格”
 8.	若基本上末编写程序或程序纯属抄袭，验收得分为“不及格”
-
-
-
-
-	
-
-
-
