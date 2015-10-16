@@ -10,6 +10,7 @@
 		311070BE1BD118FC00C5B081 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 311070BD1BD118FC00C5B081 /* main.cpp */; };
 		311070C61BD1191500C5B081 /* Page.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 311070C41BD1191500C5B081 /* Page.cpp */; settings = {ASSET_TAGS = (); }; };
 		311070C81BD11C9300C5B081 /* Global.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 311070C71BD11C9300C5B081 /* Global.hpp */; settings = {ASSET_TAGS = (); }; };
+		311070CB1BD124B200C5B081 /* BufferManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 311070C91BD124B200C5B081 /* BufferManager.cpp */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,6 +31,8 @@
 		311070C41BD1191500C5B081 /* Page.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Page.cpp; sourceTree = "<group>"; };
 		311070C51BD1191500C5B081 /* Page.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Page.hpp; sourceTree = "<group>"; };
 		311070C71BD11C9300C5B081 /* Global.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Global.hpp; sourceTree = "<group>"; };
+		311070C91BD124B200C5B081 /* BufferManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BufferManager.cpp; sourceTree = "<group>"; };
+		311070CA1BD124B200C5B081 /* BufferManager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BufferManager.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +68,8 @@
 				311070BD1BD118FC00C5B081 /* main.cpp */,
 				311070C41BD1191500C5B081 /* Page.cpp */,
 				311070C51BD1191500C5B081 /* Page.hpp */,
+				311070C91BD124B200C5B081 /* BufferManager.cpp */,
+				311070CA1BD124B200C5B081 /* BufferManager.hpp */,
 				311070C71BD11C9300C5B081 /* Global.hpp */,
 			);
 			path = MiniSQL;
@@ -129,6 +134,7 @@
 				311070C81BD11C9300C5B081 /* Global.hpp in Sources */,
 				311070C61BD1191500C5B081 /* Page.cpp in Sources */,
 				311070BE1BD118FC00C5B081 /* main.cpp in Sources */,
+				311070CB1BD124B200C5B081 /* BufferManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

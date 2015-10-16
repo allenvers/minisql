@@ -10,23 +10,31 @@
 #define Page_hpp
 
 #include "Global.hpp"
-#include <unistd.h>
 #include <cstring>
 #include <string>
 
 using namespace std;
 
+enum class PageType {
+    UndefinedPage,
+    RecordPage,
+    IndexPage,
+    RecordCatalogPage,
+    IndexCatalogPage
+};
 
 class Page {
 public:
-    Page(string fileName = "", PageIndex pageNumber = UNDEFINEED_PAGE) {
+    Page(string fileName = "", PageType pageType = PageType::UndefinedPage, PageIndex pageNumber = UNDEFINEED_PAGE_NUM) {
         this->fileName = fileName;
+        this->pageType = pageType;
         this->pageNumber = pageNumber;
         this->pageData = new char[PAGESIZE];
     }
     
     Page(const Page &page) {
         this->fileName = page.fileName;
+        this->pageType = pageType;
         this->pageNumber = page.pageNumber;
         this->pageData = new char[PAGESIZE];
         memcpy(this->pageData, page.pageData, PAGESIZE);
@@ -37,10 +45,8 @@ public:
             delete []pageData;
     }
     
-//    void fetchDataFromDisk();
-//    void writeDataToDisk();
-    
     string fileName;
+    PageType pageType;
     PageIndex pageNumber;
     char *pageData;
 };

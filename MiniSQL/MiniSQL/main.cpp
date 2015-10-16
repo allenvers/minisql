@@ -7,9 +7,14 @@
 //
 
 #include <iostream>
+#include "BufferManager.hpp"
+
+using namespace std;
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+    BufferManager buffer();
+    
+    cout << "123" << endl;
+    
     return 0;
 }

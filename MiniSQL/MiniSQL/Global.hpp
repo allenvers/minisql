@@ -10,4 +10,4 @@
 
 typedef unsigned long long PageIndex;
 const int PAGESIZE = 4096 * sizeof(char);
-const PageIndex UNDEFINEED_PAGE = 0xFFFFFFFFFFFFFFFF;
+const PageIndex UNDEFINEED_PAGE_NUM = 0xFFFFFFFFFFFFFFFF;
