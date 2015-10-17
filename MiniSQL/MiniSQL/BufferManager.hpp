@@ -59,10 +59,19 @@ public:
     string tableCatalogFilePath(string tableName);
     string indexCatalogFilePath(string tableName, string attributeName);
     
-    static map<string, PageIndex> tableFileHandles;
-    static map<pair<string, string>, PageIndex> indexFileHandles;
-    static map<string, PageIndex> tableCatalogFileHandles;
-    static map<pair<string, string>, PageIndex> indexCalalogFileHandles;
+    bool readPage       (Page &page);
+    bool writePage      (Page &page);
+    bool allocatePage   (Page &page);
+    bool deallocatePage (Page &page);
+    
+    void checkPageFile  (Page &page);
+    
+    void closeAllFiles();
+    
+    static map<string, PageIndexType> tableFileHandles;
+    static map<pair<string, string>, PageIndexType> indexFileHandles;
+    static map<string, PageIndexType> tableCatalogFileHandles;
+    static map<pair<string, string>, PageIndexType> indexCalalogFileHandles;
     
     static const string recordFilesDirectory;
     static const string indexFilesDirectory;

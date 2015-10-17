@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		311070BE1BD118FC00C5B081 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 311070BD1BD118FC00C5B081 /* main.cpp */; };
-		311070C61BD1191500C5B081 /* Page.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 311070C41BD1191500C5B081 /* Page.cpp */; settings = {ASSET_TAGS = (); }; };
 		311070C81BD11C9300C5B081 /* Global.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 311070C71BD11C9300C5B081 /* Global.hpp */; settings = {ASSET_TAGS = (); }; };
 		311070CB1BD124B200C5B081 /* BufferManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 311070C91BD124B200C5B081 /* BufferManager.cpp */; settings = {ASSET_TAGS = (); }; };
 		548B24551BD1E0E7007D1C08 /* CatalogManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 548B24531BD1E0E7007D1C08 /* CatalogManager.cpp */; settings = {ASSET_TAGS = (); }; };
@@ -29,7 +28,6 @@
 /* Begin PBXFileReference section */
 		311070BA1BD118FC00C5B081 /* MiniSQL */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MiniSQL; sourceTree = BUILT_PRODUCTS_DIR; };
 		311070BD1BD118FC00C5B081 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		311070C41BD1191500C5B081 /* Page.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Page.cpp; sourceTree = "<group>"; };
 		311070C51BD1191500C5B081 /* Page.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Page.hpp; sourceTree = "<group>"; };
 		311070C71BD11C9300C5B081 /* Global.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Global.hpp; sourceTree = "<group>"; };
 		311070C91BD124B200C5B081 /* BufferManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BufferManager.cpp; sourceTree = "<group>"; };
@@ -71,7 +69,6 @@
 				311070BD1BD118FC00C5B081 /* main.cpp */,
 				548B24531BD1E0E7007D1C08 /* CatalogManager.cpp */,
 				548B24541BD1E0E7007D1C08 /* CatalogManager.hpp */,
-				311070C41BD1191500C5B081 /* Page.cpp */,
 				311070C51BD1191500C5B081 /* Page.hpp */,
 				311070C91BD124B200C5B081 /* BufferManager.cpp */,
 				311070CA1BD124B200C5B081 /* BufferManager.hpp */,
@@ -137,7 +134,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				311070C81BD11C9300C5B081 /* Global.hpp in Sources */,
-				311070C61BD1191500C5B081 /* Page.cpp in Sources */,
 				311070BE1BD118FC00C5B081 /* main.cpp in Sources */,
 				548B24551BD1E0E7007D1C08 /* CatalogManager.cpp in Sources */,
 				311070CB1BD124B200C5B081 /* BufferManager.cpp in Sources */,

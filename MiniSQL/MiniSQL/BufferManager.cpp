@@ -122,3 +122,108 @@ bool BufferManager::closeIndexCatalogFile(string tableName, string attributeName
     return false;
 }
 
+void BufferManager::checkPageFile(Page &page) {
+    assert(page.pageType != PageType::UndefinedPage);
+    switch (page.pageType) {
+        case PageType::RecordPage:
+        {
+            assert(page.tableName != "");
+            if (tableFileHandles.find(page.tableName) == tableFileHandles.end())
+                assert(openTableFile(page.tableName) == true);
+            page.fileHandle = tableFileHandles[page.tableName];
+        }
+            break;
+        case PageType::IndexPage:
+        {
+            assert(page.tableName != "");
+            assert(page.attributeName != "");
+            auto indexPair = make_pair(page.tableName, page.attributeName);
+            if (indexFileHandles.find(indexPair) == indexFileHandles.end())
+                assert(openIndexFile(page.tableName, page.attributeName) == true);
+            page.fileHandle = indexFileHandles[indexPair];
+        }
+            break;
+        case PageType::RecordCatalogPage:
+        {
+            assert(page.tableName != "");
+            if (tableCatalogFileHandles.find(page.tableName) == tableCatalogFileHandles.end())
+                assert(openTableCatalogFile(page.tableName) == true);
+            page.fileHandle = tableCatalogFileHandles[page.tableName];
+        }
+            break;
+        case PageType::IndexCatalogPage:
+        {
+            assert(page.tableName != "");
+            assert(page.attributeName != "");
+            auto indexPair = make_pair(page.tableName, page.attributeName);
+            if (indexCalalogFileHandles.find(indexPair) == indexCalalogFileHandles.end())
+                assert(openIndexCatalogFile(page.tableName, page.attributeName) == true);
+            page.fileHandle = indexCalalogFileHandles[indexPair];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+bool BufferManager::readPage(Page &page) {
+    assert(page.pageType != PageType::UndefinedPage);
+    assert(page.pageIndex != UNDEFINEED_PAGE_NUM);
+    checkPageFile(page);
+    lseek(page.fileHandle, page.pageIndex * PAGESIZE, SEEK_SET);
+    read(page.fileHandle, page.pageData, PAGESIZE);
+    return true;
+}
+
+bool BufferManager::writePage(Page &page) {
+    assert(page.pageType != PageType::UndefinedPage);
+    checkPageFile(page);
+    lseek(page.fileHandle, page.pageIndex * PAGESIZE, SEEK_SET);
+    read(page.fileHandle, page.pageData, PAGESIZE);
+    return true;
+}
+
+bool BufferManager::allocatePage(Page &page) {
+    assert(page.pageType != PageType::UndefinedPage);
+    checkPageFile(page);
+    char pageBuffer[PAGESIZE];
+    lseek(page.fileHandle, 0, SEEK_SET);
+    read(page.fileHandle, pageBuffer, PAGESIZE);
+    
+    PageIndexType pageIndex = *((PageIndexType*) pageBuffer);
+    if (pageIndex != 0) {
+        lseek(page.fileHandle, pageIndex * PAGESIZE, SEEK_SET);
+        read(page.fileHandle, pageBuffer, PAGESIZE);
+        lseek(page.fileHandle, 0, SEEK_SET);
+        write(page.fileHandle, pageBuffer, PAGESIZE);
+    } else {
+        pageIndex = lseek(page.fileHandle, 0, SEEK_END) / PAGESIZE;
+        memset(pageBuffer, 0, PAGESIZE);
+        write(page.fileHandle, pageBuffer, PAGESIZE);
+    }
+    
+    page.pageIndex = pageIndex;
+    return true;
+}
+
+bool BufferManager::deallocatePage(Page &page) {
+    assert(page.pageType != PageType::UndefinedPage);
+    checkPageFile(page);
+    
+    char pageBuffer[PAGESIZE];
+    lseek(page.fileHandle, 0, SEEK_SET);
+    read(page.fileHandle, pageBuffer, PAGESIZE);
+    
+    lseek(page.fileHandle, page.pageIndex * PAGESIZE, SEEK_SET);
+    write(page.fileHandle, pageBuffer, PAGESIZE);
+    
+    PageIndexType *pageIndex = (PageIndexType*) pageBuffer;
+    *pageIndex = page.pageIndex;
+    
+    lseek(page.fileHandle, 0, SEEK_SET);
+    write(page.fileHandle, pageBuffer, PAGESIZE);
+    
+    page.pageIndex = -1;
+    
+    return true;
+}

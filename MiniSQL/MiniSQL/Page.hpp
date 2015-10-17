@@ -25,33 +25,33 @@ enum class PageType {
 
 class Page {
 public:
-    Page(string tableName = "", string attributeName = "", PageType pageType = PageType::UndefinedPage, PageIndex pageNumber = UNDEFINEED_PAGE_NUM) {
-        this->tableName = tableName;
-        this->attributeName = attributeName;
-        this->pageType = pageType;
-        this->pageNumber = pageNumber;
-        this->pageData = new char[PAGESIZE];
+    Page() {
+        tableName = "";
+        attributeName = "";
+        pageType = PageType::UndefinedPage;
+        pageIndex = -1;
+        fileHandle = -1;
+        memset(pageData, 0, PAGESIZE);
     }
     
     Page(const Page &page) {
         this->tableName = page.tableName;
         this->attributeName = page.attributeName;
         this->pageType = pageType;
-        this->pageNumber = page.pageNumber;
-        this->pageData = new char[PAGESIZE];
+        this->pageIndex = page.pageIndex;
+        fileHandle = page.fileHandle;
         memcpy(this->pageData, page.pageData, PAGESIZE);
     }
     
     ~Page() {
-        if (pageData != nullptr)
-            delete []pageData;
     }
     
-    string tableName;
-    string attributeName;
-    PageType pageType;
-    PageIndex pageNumber;
-    char *pageData;
+    string          tableName;
+    string          attributeName;
+    PageType        pageType;
+    PageIndexType   pageIndex;
+    int             fileHandle;
+    char            pageData[PAGESIZE];
 };
 
 #endif /* Page_hpp */

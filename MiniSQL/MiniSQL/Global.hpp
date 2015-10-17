@@ -11,8 +11,8 @@
 
 #include "assert.h"
 
-typedef int PageIndex;
+typedef int PageIndexType;
 const int PAGESIZE = 4096 * sizeof(char);
-const PageIndex UNDEFINEED_PAGE_NUM = 0xFFFFFFFF;
+const PageIndexType UNDEFINEED_PAGE_NUM = -1;
 
 #endif
