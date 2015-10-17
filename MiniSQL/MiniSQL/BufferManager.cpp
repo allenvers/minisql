@@ -8,6 +8,17 @@
 
 #include "BufferManager.hpp"
 
+map<string, PageIndexType> BufferManager::tableFileHandles;
+map<pair<string, string>, PageIndexType> BufferManager::indexFileHandles;
+map<string, PageIndexType> BufferManager::tableCatalogFileHandles;
+map<pair<string, string>, PageIndexType> BufferManager::indexCalalogFileHandles;
+
+const string BufferManager::recordFilesDirectory = "./RecordFiles";
+const string BufferManager::indexFilesDirectory = "./IndexFiles";
+const string BufferManager::recordCatalogFilesDirectory = "./RecordCatalogFiles";
+const string BufferManager::indexCatalogFilesDirectory = "./IndexCatalogFiles";
+
+
 bool BufferManager::openTableFile(string tableName) {
     string filePath = tableFilePath(tableName);
     if (tableFileHandles.find(tableName) == tableFileHandles.end()) {

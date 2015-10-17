@@ -9,7 +9,7 @@
 #ifndef Page_hpp
 #define Page_hpp
 
-#include "Global.hpp"
+#include "Global.h"
 #include <cstring>
 #include <string>
 

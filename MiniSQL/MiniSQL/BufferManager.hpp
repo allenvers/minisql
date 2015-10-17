@@ -9,7 +9,7 @@
 #ifndef BufferManager_hpp
 #define BufferManager_hpp
 
-#include "Global.hpp"
+#include "Global.h"
 #include "Page.hpp"
 #include <unistd.h>
 #include <fcntl.h>
@@ -20,6 +20,7 @@
 #include <map>
 #include <utility>
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -78,10 +79,5 @@ public:
     static const string recordCatalogFilesDirectory;
     static const string indexCatalogFilesDirectory;
 };
-
-const string BufferManager::recordFilesDirectory = "./RecordFiles";
-const string BufferManager::indexFilesDirectory = "./IndexFiles";
-const string BufferManager::recordCatalogFilesDirectory = "./RecordCatalogFiles";
-const string BufferManager::indexCatalogFilesDirectory = "./IndexCatalogFiles";
 
 #endif /* BufferManager_hpp */

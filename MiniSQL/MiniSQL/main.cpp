@@ -15,7 +15,14 @@ using namespace std;
 int main(int argc, const char * argv[]) {
     BufferManager buffer{};
     
-    cout << "123" << endl;
+    
+    Page page;
+    page.tableName = "test";
+    page.attributeName = "test";
+    page.pageType = PageType::IndexPage;
+    page.pageIndex = 2;
+    
+    buffer.deallocatePage(page);
     
     return 0;
 }
