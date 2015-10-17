@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include "BufferManager.hpp"
+#include "CatalogManager.hpp"
 
 using namespace std;
 
