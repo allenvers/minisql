@@ -12,7 +12,7 @@
 using namespace std;
 
 int main(int argc, const char * argv[]) {
-    BufferManager buffer();
+    BufferManager buffer{};
     
     cout << "123" << endl;
     
