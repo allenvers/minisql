@@ -25,15 +25,17 @@ enum class PageType {
 
 class Page {
 public:
-    Page(string fileName = "", PageType pageType = PageType::UndefinedPage, PageIndex pageNumber = UNDEFINEED_PAGE_NUM) {
-        this->fileName = fileName;
+    Page(string tableName = "", string attributeName = "", PageType pageType = PageType::UndefinedPage, PageIndex pageNumber = UNDEFINEED_PAGE_NUM) {
+        this->tableName = tableName;
+        this->attributeName = attributeName;
         this->pageType = pageType;
         this->pageNumber = pageNumber;
         this->pageData = new char[PAGESIZE];
     }
     
     Page(const Page &page) {
-        this->fileName = page.fileName;
+        this->tableName = page.tableName;
+        this->attributeName = page.attributeName;
         this->pageType = pageType;
         this->pageNumber = page.pageNumber;
         this->pageData = new char[PAGESIZE];
@@ -45,7 +47,8 @@ public:
             delete []pageData;
     }
     
-    string fileName;
+    string tableName;
+    string attributeName;
     PageType pageType;
     PageIndex pageNumber;
     char *pageData;
