@@ -8,15 +8,15 @@
 
 #include "BufferManager.hpp"
 
-map<string, PageIndexType> BufferManager::tableFileHandles;
-map<pair<string, string>, PageIndexType> BufferManager::indexFileHandles;
-map<string, PageIndexType> BufferManager::tableCatalogFileHandles;
-map<pair<string, string>, PageIndexType> BufferManager::indexCalalogFileHandles;
+map<string, PageIndexType>                  BufferManager::tableFileHandles;
+map<pair<string, string>, PageIndexType>    BufferManager::indexFileHandles;
+map<string, PageIndexType>                  BufferManager::tableCatalogFileHandles;
+map<pair<string, string>, PageIndexType>    BufferManager::indexCalalogFileHandles;
 
-const string BufferManager::recordFilesDirectory = "./RecordFiles";
-const string BufferManager::indexFilesDirectory = "./IndexFiles";
+const string BufferManager::recordFilesDirectory        = "./RecordFiles";
+const string BufferManager::indexFilesDirectory         = "./IndexFiles";
 const string BufferManager::recordCatalogFilesDirectory = "./RecordCatalogFiles";
-const string BufferManager::indexCatalogFilesDirectory = "./IndexCatalogFiles";
+const string BufferManager::indexCatalogFilesDirectory  = "./IndexCatalogFiles";
 
 
 bool BufferManager::openTableFile(string tableName) {
@@ -101,6 +101,7 @@ bool BufferManager::closeTableFile(string tableName) {
     if (tableFileHandles.find(tableName) == tableFileHandles.end())
         return false;
     int handle = tableFileHandles[tableName];
+    tableFileHandles.erase(tableName);
     if (close(handle) != -1) return true;
     return false;
 }
@@ -110,6 +111,7 @@ bool BufferManager::closeIndexFile(string tableName, string attributeName) {
     if (indexFileHandles.find(indexPair) == indexFileHandles.end())
         return false;
     int handle = indexFileHandles[indexPair];
+    indexFileHandles.erase(indexPair);
     if (close(handle) != -1) return true;
     return false;
 }
@@ -119,6 +121,7 @@ bool BufferManager::closeTableCatalogFile(string tableName) {
         return false;
     }
     int handle = tableCatalogFileHandles[tableName];
+    tableCatalogFileHandles.erase(tableName);
     if (close(handle) != -1) return true;
     return false;
 }
@@ -129,6 +132,7 @@ bool BufferManager::closeIndexCatalogFile(string tableName, string attributeName
         return false;
     }
     int handle = indexCalalogFileHandles[indexPair];
+    indexCalalogFileHandles.erase(indexPair);
     if (close(handle != -1)) return true;
     return false;
 }
@@ -237,4 +241,18 @@ bool BufferManager::deallocatePage(Page &page) {
     page.pageIndex = -1;
     
     return true;
+}
+
+void BufferManager::closeAllFiles() {
+    for (auto itr: tableFileHandles)
+        assert(close(itr.second) != -1);
+    
+    for (auto itr: indexFileHandles)
+        assert(close(itr.second) != -1);
+    
+    for (auto itr: tableCatalogFileHandles)
+        assert(close(itr.second) != -1);
+    
+    for (auto itr: indexCalalogFileHandles)
+        assert(close(itr.second) != -1);
 }
