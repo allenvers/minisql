@@ -55,10 +55,10 @@ public:
     bool closeTableCatalogFile(string tableName);
     bool closeIndexCatalogFile(string tableName, string attributeName);
     
-    string tableFilePath(string tableName);
-    string indexFilePath(string tableName, string attributeName);
-    string tableCatalogFilePath(string tableName);
-    string indexCatalogFilePath(string tableName, string attributeName);
+    inline string tableFilePath(string tableName);
+    inline string indexFilePath(string tableName, string attributeName);
+    inline string tableCatalogFilePath(string tableName);
+    inline string indexCatalogFilePath(string tableName, string attributeName);
     
     bool readPage       (Page &page);
     bool writePage      (Page &page);
