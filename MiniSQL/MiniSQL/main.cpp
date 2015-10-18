@@ -14,16 +14,6 @@ using namespace std;
 
 int main(int argc, const char * argv[]) {
     BufferManager buffer{};
-    
-    
-    Page page;
-    page.tableName = "test";
-    page.attributeName = "test";
-    page.pageType = PageType::IndexPage;
-    page.pageIndex = 2;
-    
-    buffer.deallocatePage(page);
-    
     CatalogManager catalog;
 //    catalog.dropTable("student");
     catalog.insertTable();

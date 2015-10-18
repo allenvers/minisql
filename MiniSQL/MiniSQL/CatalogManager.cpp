@@ -23,17 +23,15 @@ void CatalogManager::insertTable()
     
     page.pageType = PageType::RecordCatalogPage;
     page.tableName = "TableName";
-    page.attributeName = "AttrName";
     page.pageIndex = 2;
     strcpy(page.pageData, "this is a test~");
-    printf("%s\n",page.pageData);
+    printf("page: %s\n",page.pageData);
     buffer.writePage(page);
     page2.tableName = "TableName";
-    page2.attributeName = "AttrName";
     page2.pageIndex = 2;
     page2.pageType = PageType::RecordCatalogPage;
     buffer.readPage(page2);
-    printf("%s\n",page2.pageData);
+    printf("page2: %s\n",page2.pageData);
     insertIndex("TableName", "PrimaryKey", "PrimaryKeyIndex");
 }
 
