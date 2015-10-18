@@ -101,6 +101,7 @@ bool BufferManager::closeTableFile(string tableName) {
     if (tableFileHandles.find(tableName) == tableFileHandles.end())
         return false;
     int handle = tableFileHandles[tableName];
+    tableFileHandles.erase(tableName);
     if (close(handle) != -1) return true;
     return false;
 }
@@ -110,6 +111,7 @@ bool BufferManager::closeIndexFile(string tableName, string attributeName) {
     if (indexFileHandles.find(indexPair) == indexFileHandles.end())
         return false;
     int handle = indexFileHandles[indexPair];
+    indexFileHandles.erase(indexPair);
     if (close(handle) != -1) return true;
     return false;
 }
@@ -119,6 +121,7 @@ bool BufferManager::closeTableCatalogFile(string tableName) {
         return false;
     }
     int handle = tableCatalogFileHandles[tableName];
+    tableCatalogFileHandles.erase(tableName);
     if (close(handle) != -1) return true;
     return false;
 }
@@ -129,6 +132,7 @@ bool BufferManager::closeIndexCatalogFile(string tableName, string attributeName
         return false;
     }
     int handle = indexCalalogFileHandles[indexPair];
+    indexCalalogFileHandles.erase(indexPair);
     if (close(handle != -1)) return true;
     return false;
 }
