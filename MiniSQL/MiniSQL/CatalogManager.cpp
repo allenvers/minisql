@@ -7,21 +7,40 @@
 //
 
 #include "CatalogManager.hpp"
+#include "BufferManager.hpp"
+#include "Page.hpp"
 #include <stdio.h>
 #include <string>
 using namespace std;
 
 
-void CatalogManager::InsertTable()
+void CatalogManager::insertTable()
 {
     printf("InsertTable\n");
-    InsertIndex("TableName", "PrimaryKey", "PrimaryKeyIndex");
+    Page page;
+    Page page2;
+    BufferManager buffer;
+    
+    page.pageType = PageType::RecordCatalogPage;
+    page.tableName = "TableName";
+    page.attributeName = "AttrName";
+    page.pageIndex = 2;
+    strcpy(page.pageData, "this is a test~");
+    printf("%s\n",page.pageData);
+    buffer.writePage(page);
+    page2.tableName = "TableName";
+    page2.attributeName = "AttrName";
+    page2.pageIndex = 2;
+    page2.pageType = PageType::RecordCatalogPage;
+    buffer.readPage(page2);
+    printf("%s\n",page2.pageData);
+    insertIndex("TableName", "PrimaryKey", "PrimaryKeyIndex");
 }
 
-void CatalogManager::DropTable(string TableName)
+void CatalogManager::dropTable(string tableName)
 {
     printf("DropTable\n");
-    if (!TableExisted(TableName))
+    if (!tableExisted(tableName))
     {
         printf("Table does not exist!");
     }
@@ -30,37 +49,64 @@ void CatalogManager::DropTable(string TableName)
         
     }
 }
-bool CatalogManager::TableExisted(string TableName)
+
+bool CatalogManager::tableExisted(string tableName)
 {
+    BufferManager bufferManager;
     printf("TableExisted\n");
-    return 1;
+    if (1)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
-int CatalogManager::AttrType(string TableName, string AttrName)
+int CatalogManager::attrType(string tableName, string attrName)
 {
     printf("AttrType\n");
     return 0;
 }
 
-string CatalogManager::PrimaryKey(string TableName)
+bool CatalogManager::attrUnique(string tableName, string attrName)
+{
+    return 1;
+}
+
+string CatalogManager::primaryKey(string tableName)
 {
     printf("PrimaryKey\n");
     return "AttrName";
 }
 
-bool CatalogManager::IndexExisted(string TableName, string AttrName)
+bool CatalogManager::indexExisted(string tableName, string attrName)
 {
     printf("IndexExisted\n");
     return 1;
 }
 
-string CatalogManager::IndexLocation(string IndexName)
+string CatalogManager::indexLocation(string indexName)
 {
     printf("IndexLocation\n");
     return "Tablename+AttrName";
 }
 
-void CatalogManager::InsertIndex(string TableName, string AttrName, string IndexName)
+void CatalogManager::insertIndex(string tableName, string attrName, string indexName)
 {
     printf("InsertIndex");
+    if (indexExisted(tableName, attrName))
+    {
+        printf("Index existed!");
+    }
+    else
+    if (!attrUnique(tableName, attrName))
+    {
+        printf("Attribution is not unique!");
+    }
+    else
+    {
+        
+    }
 }

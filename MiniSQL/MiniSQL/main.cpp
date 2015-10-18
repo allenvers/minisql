@@ -24,5 +24,8 @@ int main(int argc, const char * argv[]) {
     
     buffer.deallocatePage(page);
     
+    CatalogManager catalog;
+//    catalog.dropTable("student");
+    catalog.insertTable();
     return 0;
 }
