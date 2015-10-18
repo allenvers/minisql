@@ -7,8 +7,10 @@
 //
 
 #include <iostream>
+#include <string>
 #include "BufferManager.hpp"
 #include "CatalogManager.hpp"
+#include "TableInfo.cpp"
 
 using namespace std;
 
@@ -25,7 +27,23 @@ int main(int argc, const char * argv[]) {
     buffer.deallocatePage(page);
     
     CatalogManager catalog;
-//    catalog.dropTable("student");
-    catalog.insertTable();
+    
+    TableInfo table;
+    table.tableName = "Student";
+    table.attrNum = 2;
+    table.attrType[0] = "int";
+    table.attrType[1] = "char(10)";
+    table.attrIndex[0] = "";
+    table.attrIndex[1] = "";
+    table.attrUnique[0] = 'Y';
+    table.attrUnique[1] = 'N';
+    table.attrName[0] = "studentid";
+    table.attrName[1] = "studentname";
+    table.primaryKeyLoc = 0;
+    catalog.insertTable(table);
+    
+    string s;
+    int k = catalog.attrType("Student", "studentname");
+    printf("type = %d\n",k);
     return 0;
 }

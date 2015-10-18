@@ -11,6 +11,8 @@
 		311070C81BD11C9300C5B081 /* Global.h in Sources */ = {isa = PBXBuildFile; fileRef = 311070C71BD11C9300C5B081 /* Global.h */; settings = {ASSET_TAGS = (); }; };
 		311070CB1BD124B200C5B081 /* BufferManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 311070C91BD124B200C5B081 /* BufferManager.cpp */; settings = {ASSET_TAGS = (); }; };
 		548B24551BD1E0E7007D1C08 /* CatalogManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 548B24531BD1E0E7007D1C08 /* CatalogManager.cpp */; settings = {ASSET_TAGS = (); }; };
+		548B26B61BD375F5007D1C08 /* TableInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 548B26B41BD375F5007D1C08 /* TableInfo.cpp */; settings = {ASSET_TAGS = (); }; };
+		548B26B91BD386EC007D1C08 /* CatalogPage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 548B26B71BD386EC007D1C08 /* CatalogPage.cpp */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +36,10 @@
 		311070CA1BD124B200C5B081 /* BufferManager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BufferManager.hpp; sourceTree = "<group>"; };
 		548B24531BD1E0E7007D1C08 /* CatalogManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CatalogManager.cpp; sourceTree = "<group>"; };
 		548B24541BD1E0E7007D1C08 /* CatalogManager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CatalogManager.hpp; sourceTree = "<group>"; };
+		548B26B41BD375F5007D1C08 /* TableInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TableInfo.cpp; sourceTree = "<group>"; };
+		548B26B51BD375F5007D1C08 /* TableInfo.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TableInfo.hpp; sourceTree = "<group>"; };
+		548B26B71BD386EC007D1C08 /* CatalogPage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CatalogPage.cpp; sourceTree = "<group>"; };
+		548B26B81BD386EC007D1C08 /* CatalogPage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CatalogPage.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +73,10 @@
 			isa = PBXGroup;
 			children = (
 				311070BD1BD118FC00C5B081 /* main.cpp */,
+				548B26B71BD386EC007D1C08 /* CatalogPage.cpp */,
+				548B26B81BD386EC007D1C08 /* CatalogPage.hpp */,
+				548B26B41BD375F5007D1C08 /* TableInfo.cpp */,
+				548B26B51BD375F5007D1C08 /* TableInfo.hpp */,
 				548B24531BD1E0E7007D1C08 /* CatalogManager.cpp */,
 				548B24541BD1E0E7007D1C08 /* CatalogManager.hpp */,
 				311070C51BD1191500C5B081 /* Page.hpp */,
@@ -135,7 +145,9 @@
 			files = (
 				311070C81BD11C9300C5B081 /* Global.h in Sources */,
 				311070BE1BD118FC00C5B081 /* main.cpp in Sources */,
+				548B26B61BD375F5007D1C08 /* TableInfo.cpp in Sources */,
 				548B24551BD1E0E7007D1C08 /* CatalogManager.cpp in Sources */,
+				548B26B91BD386EC007D1C08 /* CatalogPage.cpp in Sources */,
 				311070CB1BD124B200C5B081 /* BufferManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

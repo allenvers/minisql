@@ -6,11 +6,12 @@
 //  Copyright © 2015年 Fan Wu. All rights reserved.
 //
 
-#ifndef _CatalogManager_hpp_
-#define _CatalogManager_hpp_
+#ifndef CatalogManager_hpp
+#define CatalogManager_hpp
 
 #include <stdio.h>
 #include "BufferManager.hpp"
+#include "TableInfo.hpp"
 #include <string>
 using namespace std;
 
@@ -19,7 +20,7 @@ class CatalogManager
 public:
     CatalogManager(){};
     ~CatalogManager(){};
-    void insertTable();                 //参数：表名、属性数目、主键、每个属性的类型、每个属性是否unique
+    void insertTable(TableInfo);                 //参数：表名、属性数目、主键、每个属性的类型、每个属性是否unique
     void dropTable(string);             //参数：表名
     bool tableExisted(string);          //参数：表名
     int attrType(string, string);       //参数：表名、列名；返回值：0-不存在，1-int，2-float，>2-char(返回值-2)（例如5表示char(3)）
