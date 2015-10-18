@@ -45,5 +45,6 @@ int main(int argc, const char * argv[]) {
     string s;
     int k = catalog.attrType("Student", "studentname");
     printf("type = %d\n",k);
+    printf("primarykey = %s\n",catalog.primaryKey("Student").c_str());
     return 0;
 }

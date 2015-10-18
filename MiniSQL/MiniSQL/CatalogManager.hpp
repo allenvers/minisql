@@ -26,7 +26,7 @@ public:
     int attrType(string, string);       //参数：表名、列名；返回值：0-不存在，1-int，2-float，>2-char(返回值-2)（例如5表示char(3)）
     bool attrUnique(string, string);    //参数：表名、列名
     string primaryKey(string);          //参数：表名；返回值：列名
-    bool indexExisted(string, string);  //参数：表名、列名
+    bool indexExisted(string);          //参数：索引名
     string indexLocation(string);       //参数：索引名；返回值：表名、列名
     void insertIndex(string, string, string);   //参数：表名，列名，索引名
     

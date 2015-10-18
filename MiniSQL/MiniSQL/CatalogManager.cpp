@@ -15,7 +15,6 @@
 #include <string>
 using namespace std;
 
-//参数：表名、属性数目、主键、每个属性的类型、每个属性是否unique
 void CatalogManager::insertTable(TableInfo table)
 {
     printf("InsertTable\n");
@@ -23,9 +22,7 @@ void CatalogManager::insertTable(TableInfo table)
     BufferManager buffer;
     int i;
     
-    page.pageType = PageType::RecordCatalogPage;
     page.tableName = table.tableName;
-    page.pageIndex = 1;
     page.pageData[0] = (char)table.attrNum;
     page.pageData[1] = (char)table.primaryKeyLoc;
     for (i=0; i<table.attrNum; i++)
@@ -76,9 +73,7 @@ int CatalogManager::attrType(string tableName, string attrName)
     CatalogPage page;
     BufferManager buffer;
     
-    page.pageType = PageType::RecordCatalogPage;
     page.tableName = tableName;
-    page.pageIndex = 1;
     buffer.readPage(page);
     num = (int)page.pageData[0];
     for (i=0; i<num; i++)
@@ -105,16 +100,38 @@ int CatalogManager::attrType(string tableName, string attrName)
 
 bool CatalogManager::attrUnique(string tableName, string attrName)
 {
-    return 1;
+    int i,num;
+    char c = '\0';
+    
+    printf("AttrUnique\n");
+    CatalogPage page;
+    BufferManager buffer;
+    
+    page.tableName = tableName;
+    buffer.readPage(page);
+    num = (int)page.pageData[0];
+    for (i=0; i<num; i++)
+        if (page.readAttrName(i) == attrName)
+            c = page.readAttrUnique(i);
+
+    if (c=='Y')
+        return 1;
+    else
+        return 0;
 }
 
 string CatalogManager::primaryKey(string tableName)
 {
+    CatalogPage page;
+    BufferManager buffer;
+    
+    page.tableName = tableName;
+    buffer.readPage(page);
     printf("PrimaryKey\n");
-    return "AttrName";
+    return page.readAttrName((int)page.pageData[1]);
 }
 
-bool CatalogManager::indexExisted(string tableName, string attrName)
+bool CatalogManager::indexExisted(string indexName)
 {
     printf("IndexExisted\n");
     return 1;
@@ -129,7 +146,7 @@ string CatalogManager::indexLocation(string indexName)
 void CatalogManager::insertIndex(string tableName, string attrName, string indexName)
 {
     printf("InsertIndex\n");
-    if (indexExisted(tableName, attrName))
+    if (indexExisted(indexName))
     {
         printf("Index existed!\n");
     }
