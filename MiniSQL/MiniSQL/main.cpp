@@ -13,9 +13,5 @@
 using namespace std;
 
 int main(int argc, const char * argv[]) {
-    BufferManager buffer{};
-    CatalogManager catalog;
-//    catalog.dropTable("student");
-    catalog.insertTable();
     return 0;
 }
