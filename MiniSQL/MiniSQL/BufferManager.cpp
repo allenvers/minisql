@@ -238,3 +238,17 @@ bool BufferManager::deallocatePage(Page &page) {
     
     return true;
 }
+
+void BufferManager::closeAllFiles() {
+    for (auto itr: tableFileHandles)
+        assert(close(itr.second) != -1);
+    
+    for (auto itr: indexFileHandles)
+        assert(close(itr.second) != -1);
+    
+    for (auto itr: tableCatalogFileHandles)
+        assert(close(itr.second) != -1);
+    
+    for (auto itr: indexCalalogFileHandles)
+        assert(close(itr.second) != -1);
+}

@@ -20,9 +20,12 @@ int main(int argc, const char * argv[]) {
     page.tableName = "test";
     page.attributeName = "test";
     page.pageType = PageType::IndexPage;
-    page.pageIndex = 2;
     
-    buffer.deallocatePage(page);
+    buffer.allocatePage(page);
+    
+    cout << page.pageIndex << endl;
+    
+    buffer.closeAllFiles();
     
     return 0;
 }
