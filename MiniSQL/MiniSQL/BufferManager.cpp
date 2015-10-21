@@ -137,6 +137,46 @@ bool BufferManager::closeIndexCatalogFile(string tableName, string attributeName
     return false;
 }
 
+bool BufferManager::tableFileIsExist(string tableName) {
+    auto filePath = tableFilePath(tableName);
+    return access(filePath.c_str(), F_OK) != -1;
+}
+
+bool BufferManager::indexFileIsExist(string tableName, string attributeName) {
+    auto filePath = indexFilePath(tableName, attributeName);
+    return access(filePath.c_str(), F_OK) != -1;
+}
+
+bool BufferManager::tableCatalogFileIsExist(string tableName) {
+    auto filePath = tableCatalogFilePath(tableName);
+    return access(filePath.c_str(), F_OK) != -1;
+}
+
+bool BufferManager::indexCatalogFileIsExist(string tableName, string attributeName) {
+    auto filePath = indexCatalogFilePath(tableName, attributeName);
+    return access(filePath.c_str(), F_OK) != -1;
+}
+
+bool BufferManager::deleteTableFile(string tableName) {
+    auto filePath = tableFilePath(tableName);
+    return remove(filePath.c_str()) != -1;
+}
+
+bool BufferManager::deleteIndexFile(string tableName, string attributeName) {
+    auto filePath = indexFilePath(tableName, attributeName);
+    return remove(filePath.c_str()) != -1;
+}
+
+bool BufferManager::deleteTableCatalogFile(string tableName) {
+    auto filePath = tableCatalogFilePath(tableName);
+    return remove(filePath.c_str()) != -1;
+}
+
+bool BufferManager::deleteIndexCatalogFile(string tableName, string attributeName) {
+    auto filePath = indexCatalogFilePath(tableName, attributeName);
+    return remove(filePath.c_str()) != -1;
+}
+
 void BufferManager::checkPageFile(Page &page) {
     assert(page.pageType != PageType::UndefinedPage);
     switch (page.pageType) {

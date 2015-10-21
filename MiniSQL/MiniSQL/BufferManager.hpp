@@ -55,6 +55,16 @@ public:
     bool closeTableCatalogFile(string tableName);
     bool closeIndexCatalogFile(string tableName, string attributeName);
     
+    bool tableFileIsExist(string tableName);
+    bool indexFileIsExist(string tableName, string attributeName);
+    bool tableCatalogFileIsExist(string tableName);
+    bool indexCatalogFileIsExist(string tableName, string attributeName);
+    
+    bool deleteTableFile(string tableName);
+    bool deleteIndexFile(string tableName, string attributeName);
+    bool deleteTableCatalogFile(string tableName);
+    bool deleteIndexCatalogFile(string tableName, string attributeName);
+    
     inline string tableFilePath(string tableName);
     inline string indexFilePath(string tableName, string attributeName);
     inline string tableCatalogFilePath(string tableName);
