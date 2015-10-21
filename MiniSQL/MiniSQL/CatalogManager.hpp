@@ -29,7 +29,7 @@ public:
     bool indexExisted(string);          //参数：索引名
     string indexLocation(string);       //参数：索引名；返回值：表名、列名
     void insertIndex(string, string, string);   //参数：表名，列名，索引名
-    
+    void deleteIndex(string);           //参数：索引名
 };
 
 #endif /* CatalogManager_hpp */
