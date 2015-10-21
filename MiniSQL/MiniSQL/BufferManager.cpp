@@ -137,6 +137,80 @@ bool BufferManager::closeIndexCatalogFile(string tableName, string attributeName
     return false;
 }
 
+bool BufferManager::tableFileIsExist(string tableName) {
+    auto filePath = tableFilePath(tableName);
+    return access(filePath.c_str(), F_OK) != -1;
+}
+
+bool BufferManager::indexFileIsExist(string tableName, string attributeName) {
+    auto filePath = indexFilePath(tableName, attributeName);
+    return access(filePath.c_str(), F_OK) != -1;
+}
+
+bool BufferManager::tableCatalogFileIsExist(string tableName) {
+    auto filePath = tableCatalogFilePath(tableName);
+    return access(filePath.c_str(), F_OK) != -1;
+}
+
+bool BufferManager::indexCatalogFileIsExist(string tableName, string attributeName) {
+    auto filePath = indexCatalogFilePath(tableName, attributeName);
+    return access(filePath.c_str(), F_OK) != -1;
+}
+
+bool BufferManager::deleteTableFile(string tableName) {
+    auto filePath = tableFilePath(tableName);
+    return remove(filePath.c_str()) != -1;
+}
+
+bool BufferManager::deleteIndexFile(string tableName, string attributeName) {
+    auto filePath = indexFilePath(tableName, attributeName);
+    return remove(filePath.c_str()) != -1;
+}
+
+bool BufferManager::deleteTableCatalogFile(string tableName) {
+    auto filePath = tableCatalogFilePath(tableName);
+    return remove(filePath.c_str()) != -1;
+}
+
+bool BufferManager::deleteIndexCatalogFile(string tableName, string attributeName) {
+    auto filePath = indexCatalogFilePath(tableName, attributeName);
+    return remove(filePath.c_str()) != -1;
+}
+
+PageIndexType BufferManager::tableFileTotalPages(string tableName) {
+    Page page;
+    page.tableName = tableName;
+    page.pageType = PageType::RecordPage;
+    checkPageFile(page);
+    return lseek(page.fileHandle, 0, SEEK_END) / PAGESIZE;
+}
+
+PageIndexType BufferManager::indexFileTotalPages(string tableName, string attributeName) {
+    Page page;
+    page.tableName = tableName;
+    page.attributeName = attributeName;
+    page.pageType = PageType::IndexPage;
+    checkPageFile(page);
+    return lseek(page.fileHandle, 0, SEEK_END) / PAGESIZE;
+}
+
+PageIndexType BufferManager::tableCatalogFileTotalPages(string tableName) {
+    Page page;
+    page.tableName = tableName;
+    page.pageType = PageType::RecordCatalogPage;
+    checkPageFile(page);
+    return lseek(page.fileHandle, 0, SEEK_END) / PAGESIZE;
+}
+
+PageIndexType BufferManager::indexCatalogFileTotalPages(string tableName, string attributeName) {
+    Page page;
+    page.tableName = tableName;
+    page.attributeName = attributeName;
+    page.pageType = PageType::IndexCatalogPage;
+    checkPageFile(page);
+    return lseek(page.fileHandle, 0, SEEK_END) / PAGESIZE;
+}
+
 void BufferManager::checkPageFile(Page &page) {
     assert(page.pageType != PageType::UndefinedPage);
     switch (page.pageType) {
@@ -186,16 +260,15 @@ bool BufferManager::readPage(Page &page) {
     assert(page.pageIndex != UNDEFINEED_PAGE_NUM);
     checkPageFile(page);
     lseek(page.fileHandle, page.pageIndex * PAGESIZE, SEEK_SET);
-    read(page.fileHandle, page.pageData, PAGESIZE);
-    return true;
+    return read(page.fileHandle, page.pageData, PAGESIZE) != -1;
 }
 
 bool BufferManager::writePage(Page &page) {
     assert(page.pageType != PageType::UndefinedPage);
+    assert(page.pageIndex != UNDEFINEED_PAGE_NUM);
     checkPageFile(page);
     lseek(page.fileHandle, page.pageIndex * PAGESIZE, SEEK_SET);
-    write(page.fileHandle, page.pageData, PAGESIZE);
-    return true;
+    return write(page.fileHandle, page.pageData, PAGESIZE) != -1;
 }
 
 bool BufferManager::allocatePage(Page &page) {
