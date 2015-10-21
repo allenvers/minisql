@@ -258,16 +258,14 @@ bool BufferManager::readPage(Page &page) {
     assert(page.pageIndex != UNDEFINEED_PAGE_NUM);
     checkPageFile(page);
     lseek(page.fileHandle, page.pageIndex * PAGESIZE, SEEK_SET);
-    read(page.fileHandle, page.pageData, PAGESIZE);
-    return true;
+    return read(page.fileHandle, page.pageData, PAGESIZE) != -1;
 }
 
 bool BufferManager::writePage(Page &page) {
     assert(page.pageType != PageType::UndefinedPage);
     checkPageFile(page);
     lseek(page.fileHandle, page.pageIndex * PAGESIZE, SEEK_SET);
-    write(page.fileHandle, page.pageData, PAGESIZE);
-    return true;
+    return write(page.fileHandle, page.pageData, PAGESIZE) != -1;
 }
 
 bool BufferManager::allocatePage(Page &page) {
