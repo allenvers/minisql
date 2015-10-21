@@ -10,6 +10,7 @@
 #include "BufferManager.hpp"
 #include "Page.hpp"
 #include "CatalogPage.hpp"
+#include "IndexCatalogPage.hpp"
 #include "TableInfo.hpp"
 #include <stdio.h>
 #include <string>
@@ -21,6 +22,7 @@ void CatalogManager::insertTable(TableInfo table)
     CatalogPage page;
     BufferManager buffer;
     int i;
+    string s;
     
     page.tableName = table.tableName;
     page.pageData[0] = (char)table.attrNum;
@@ -34,7 +36,8 @@ void CatalogManager::insertTable(TableInfo table)
     }
     
     buffer.writePage(page);
-    insertIndex("TableName", "PrimaryKey", "PrimaryKeyIndex");
+    printf("** %s\n",table.attrName[table.primaryKeyLoc].c_str());
+    insertIndex(table.tableName, table.attrName[table.primaryKeyLoc], table.tableName+table.attrName[table.primaryKeyLoc]);
 }
 
 void CatalogManager::dropTable(string tableName)
@@ -134,7 +137,7 @@ string CatalogManager::primaryKey(string tableName)
 bool CatalogManager::indexExisted(string indexName)
 {
     printf("IndexExisted\n");
-    return 1;
+    return 0;
 }
 
 string CatalogManager::indexLocation(string indexName)
@@ -145,6 +148,7 @@ string CatalogManager::indexLocation(string indexName)
 
 void CatalogManager::insertIndex(string tableName, string attrName, string indexName)
 {
+    IndexCatalogPage indexPage;
     printf("InsertIndex\n");
     if (indexExisted(indexName))
     {
@@ -153,10 +157,11 @@ void CatalogManager::insertIndex(string tableName, string attrName, string index
     else
     if (!attrUnique(tableName, attrName))
     {
-        printf("Attribution is not unique!");
+        printf("Attribution is not unique!\n");
     }
     else
     {
-        
+        indexPage.writeIndex(tableName, attrName, tableName+attrName);
+        //此处应该有个api接口，用来真正建索引
     }
 }

@@ -17,6 +17,8 @@ void CatalogPage::writeAttr(int start, string cont)
     len=(int)cont.length();
     for (i=0; i<len; i++)
         pageData[start+i]=cont[i];
+    
+    pageData[start+i]=0;
 }
 
 string CatalogPage::readAttrName(int num)
