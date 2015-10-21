@@ -168,8 +168,8 @@ void BufferManager::checkPageFile(Page &page) {
             break;
         case PageType::IndexCatalogPage:
         {
-            assert(page.tableName != "");
-            assert(page.attributeName != "");
+//            assert(page.tableName != "");
+//            assert(page.attributeName != "");
             auto indexPair = make_pair(page.tableName, page.attributeName);
             if (indexCalalogFileHandles.find(indexPair) == indexCalalogFileHandles.end())
                 assert(openIndexCatalogFile(page.tableName, page.attributeName) == true);

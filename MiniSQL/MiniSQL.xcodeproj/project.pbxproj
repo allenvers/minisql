@@ -13,6 +13,7 @@
 		548B24551BD1E0E7007D1C08 /* CatalogManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 548B24531BD1E0E7007D1C08 /* CatalogManager.cpp */; settings = {ASSET_TAGS = (); }; };
 		548B26B61BD375F5007D1C08 /* TableInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 548B26B41BD375F5007D1C08 /* TableInfo.cpp */; settings = {ASSET_TAGS = (); }; };
 		548B26B91BD386EC007D1C08 /* CatalogPage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 548B26B71BD386EC007D1C08 /* CatalogPage.cpp */; settings = {ASSET_TAGS = (); }; };
+		54B8B0811BD757A50067B262 /* IndexCatalogPage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 54B8B07F1BD757A50067B262 /* IndexCatalogPage.cpp */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +41,8 @@
 		548B26B51BD375F5007D1C08 /* TableInfo.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TableInfo.hpp; sourceTree = "<group>"; };
 		548B26B71BD386EC007D1C08 /* CatalogPage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CatalogPage.cpp; sourceTree = "<group>"; };
 		548B26B81BD386EC007D1C08 /* CatalogPage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CatalogPage.hpp; sourceTree = "<group>"; };
+		54B8B07F1BD757A50067B262 /* IndexCatalogPage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IndexCatalogPage.cpp; sourceTree = "<group>"; };
+		54B8B0801BD757A50067B262 /* IndexCatalogPage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = IndexCatalogPage.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,8 +76,10 @@
 			isa = PBXGroup;
 			children = (
 				311070BD1BD118FC00C5B081 /* main.cpp */,
-				548B26B71BD386EC007D1C08 /* CatalogPage.cpp */,
+				54B8B0801BD757A50067B262 /* IndexCatalogPage.hpp */,
+				54B8B07F1BD757A50067B262 /* IndexCatalogPage.cpp */,
 				548B26B81BD386EC007D1C08 /* CatalogPage.hpp */,
+				548B26B71BD386EC007D1C08 /* CatalogPage.cpp */,
 				548B26B41BD375F5007D1C08 /* TableInfo.cpp */,
 				548B26B51BD375F5007D1C08 /* TableInfo.hpp */,
 				548B24531BD1E0E7007D1C08 /* CatalogManager.cpp */,
@@ -148,6 +153,7 @@
 				548B26B61BD375F5007D1C08 /* TableInfo.cpp in Sources */,
 				548B24551BD1E0E7007D1C08 /* CatalogManager.cpp in Sources */,
 				548B26B91BD386EC007D1C08 /* CatalogPage.cpp in Sources */,
+				54B8B0811BD757A50067B262 /* IndexCatalogPage.cpp in Sources */,
 				311070CB1BD124B200C5B081 /* BufferManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

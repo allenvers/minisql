@@ -14,7 +14,7 @@ void CatalogPage::writeAttr(int start, string cont)
 {
     int i,len;
     
-    len=cont.length();
+    len=(int)cont.length();
     for (i=0; i<len; i++)
         pageData[start+i]=cont[i];
 }

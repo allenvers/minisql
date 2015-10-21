@@ -16,6 +16,7 @@ class CatalogPage: public Page
 {
 public:
     CatalogPage(){pageType = PageType::RecordCatalogPage; pageIndex = 1;}
+    ~CatalogPage(){};
     void writeAttr(int, string);
     string readAttrName(int);
     string readAttrType(int);
