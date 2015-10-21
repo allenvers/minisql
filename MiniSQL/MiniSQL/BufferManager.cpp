@@ -177,6 +177,40 @@ bool BufferManager::deleteIndexCatalogFile(string tableName, string attributeNam
     return remove(filePath.c_str()) != -1;
 }
 
+PageIndexType BufferManager::tableFileTotalPages(string tableName) {
+    Page page;
+    page.tableName = tableName;
+    page.pageType = PageType::RecordPage;
+    checkPageFile(page);
+    return lseek(page.fileHandle, 0, SEEK_END) / PAGESIZE;
+}
+
+PageIndexType BufferManager::indexFileTotalPages(string tableName, string attributeName) {
+    Page page;
+    page.tableName = tableName;
+    page.attributeName = attributeName;
+    page.pageType = PageType::IndexPage;
+    checkPageFile(page);
+    return lseek(page.fileHandle, 0, SEEK_END) / PAGESIZE;
+}
+
+PageIndexType BufferManager::tableCatalogFileTotalPages(string tableName) {
+    Page page;
+    page.tableName = tableName;
+    page.pageType = PageType::RecordCatalogPage;
+    checkPageFile(page);
+    return lseek(page.fileHandle, 0, SEEK_END) / PAGESIZE;
+}
+
+PageIndexType BufferManager::indexCatalogFileTotalPages(string tableName, string attributeName) {
+    Page page;
+    page.tableName = tableName;
+    page.attributeName = attributeName;
+    page.pageType = PageType::IndexCatalogPage;
+    checkPageFile(page);
+    return lseek(page.fileHandle, 0, SEEK_END) / PAGESIZE;
+}
+
 void BufferManager::checkPageFile(Page &page) {
     assert(page.pageType != PageType::UndefinedPage);
     switch (page.pageType) {
@@ -208,8 +242,6 @@ void BufferManager::checkPageFile(Page &page) {
             break;
         case PageType::IndexCatalogPage:
         {
-            assert(page.tableName != "");
-            assert(page.attributeName != "");
             auto indexPair = make_pair(page.tableName, page.attributeName);
             if (indexCalalogFileHandles.find(indexPair) == indexCalalogFileHandles.end())
                 assert(openIndexCatalogFile(page.tableName, page.attributeName) == true);
