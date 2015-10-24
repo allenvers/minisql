@@ -16,6 +16,9 @@
 using namespace std;
 
 int main(int argc, const char * argv[]) {
+    IndexCatalogPage indexPage;     //这两行正式运行的时候也要用，不仅仅是测试，用于初始化存放index的文件
+    indexPage.writeInitialPage();   //这两行正式运行的时候也要用，不仅仅是测试，用于初始化存放index的文件
+    
     BufferManager buffer{};
     
     
@@ -48,8 +51,6 @@ int main(int argc, const char * argv[]) {
     printf("type = %d\n",k);
     printf("primarykey = %s\n",catalog.primaryKey("Student").c_str());
     
-    IndexCatalogPage indexPage;     //这两行正式运行的时候也要用，不仅仅是测试，用于初始化存放index的文件
-    indexPage.writeInitialPage();   //这两行正式运行的时候也要用，不仅仅是测试，用于初始化存放index的文件
     printf("First index is %s\n",indexPage.readIndexName(1).c_str());
     return 0;
 }

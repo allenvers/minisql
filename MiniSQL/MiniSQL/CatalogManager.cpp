@@ -49,15 +49,40 @@ void CatalogManager::dropTable(string tableName)
     }
     else
     {
+        BufferManager buffer;
+        IndexCatalogPage indexPage;
+        int n,i,x;
+        string s;
         
+        indexPage.pageIndex=1;
+        buffer.readPage(indexPage);
+        n=*(int*)indexPage.pageData;
+        i=1;
+        while (i<=n)        //开始逐条检查，删除这张表上所有的索引
+        {
+            x=indexPage.readPrevDel(i);
+            if (x==0)       //如果当前条未被删除
+            {
+                s=indexPage.readTableName(i);
+                if (s==tableName)   //如果是这张表的索引，删掉
+                {
+                    indexPage.deleteIndex(i);
+                    //此处应有个api接口，用来真正删除索引
+                }
+            }
+            else            //如果当前条已被删除，则最后一条位置后移
+                n++;
+            
+            i++;
+        }
     }
 }
 
 bool CatalogManager::tableExisted(string tableName)
 {
-    BufferManager bufferManager;
+    BufferManager buffer;
     printf("TableExisted\n");
-    if (1)
+    if (buffer.tableCatalogFileIsExist(tableName))
     {
         return 1;
     }
