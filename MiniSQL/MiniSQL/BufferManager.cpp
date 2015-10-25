@@ -61,7 +61,7 @@ bool BufferManager::openTableCatalogFile(string tableName) {
 
 bool BufferManager::openIndexCatalogFile(string tableName, string attributeName) {
     auto indexPair = make_pair(tableName, attributeName);
-    string filePath = indexFilePath(tableName, attributeName);
+    string filePath = indexCatalogFilePath(tableName, attributeName);
     if (indexCalalogFileHandles.find(indexPair) == indexCalalogFileHandles.end()) {
         int fileHandle = open(filePath.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
         if (fileHandle < 0) return false;
