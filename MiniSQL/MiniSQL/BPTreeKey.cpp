@@ -127,6 +127,11 @@ void BPTreeKey::parseFromRawData() {
         }
             
         case BPTreeKeyType::CHAR: {
+            assert(keyLen >= 0);
+            assert(keyLen <= 255);
+            memcpy(charData, rawData, keyLen);
+            break;
+        }
             
         default:
             break;
