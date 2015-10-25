@@ -113,6 +113,7 @@ void BPTreeKey::convertToRawData() {
 
 void BPTreeKey::parseFromRawData() {
     assert(type != BPTreeKeyType::UNDEFINED);
+    keyLen = getKeyDataLength();
     switch (type) {
         case BPTreeKeyType::INT: {
             assert(keyLen == sizeof(int));
