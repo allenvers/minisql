@@ -113,7 +113,6 @@ void BPTreeKey::convertToRawData() {
 
 void BPTreeKey::parseFromRawData() {
     assert(type != BPTreeKeyType::UNDEFINED);
-    keyLen = getKeyDataLength();
     switch (type) {
         case BPTreeKeyType::INT: {
             assert(keyLen == sizeof(int));
@@ -128,10 +127,6 @@ void BPTreeKey::parseFromRawData() {
         }
             
         case BPTreeKeyType::CHAR: {
-            assert(keyLen >= 0);
-            assert(keyLen <= 255);
-            memcpy(charData, rawData, keyLen);
-        }
             
         default:
             break;
