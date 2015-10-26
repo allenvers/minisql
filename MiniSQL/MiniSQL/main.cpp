@@ -16,11 +16,11 @@
 using namespace std;
 
 int main(int argc, const char * argv[]) {
-    IndexCatalogPage indexPage;     //这两行正式运行的时候也要用，不仅仅是测试，用于初始化存放index的文件
-    indexPage.writeInitialPage();   //这两行正式运行的时候也要用，不仅仅是测试，用于初始化存放index的文件
     
     BufferManager buffer{};
-    
+    IndexCatalogPage indexPage;
+//    indexPage.writeInitialPage();   //这行只在第一次运行的时候要用，用于初始化存放index的文件
+   
     
     Page page;
     page.tableName = "test";
@@ -33,7 +33,7 @@ int main(int argc, const char * argv[]) {
     CatalogManager catalog;
     
     TableInfo table;
-    table.tableName = "Student";
+    table.tableName = "student";
     table.attrNum = 2;
     table.attrType[0] = "int";
     table.attrType[1] = "char(10)";
@@ -45,12 +45,12 @@ int main(int argc, const char * argv[]) {
     table.attrName[1] = "studentname";
     table.primaryKeyLoc = 0;
     catalog.insertTable(table);
-    
+    catalog.insertIndex("student", "studentname", "allname");
+    catalog.insertIndex("student", "studentid", "studentNumber");
+//    catalog.deleteIndex("studentNumber");
     string s;
-    int k = catalog.attrType("Student", "studentname");
-    printf("type = %d\n",k);
-    printf("primarykey = %s\n",catalog.primaryKey("Student").c_str());
-    
+    printf("primarykey = %s\n",catalog.primaryKey("student").c_str());
     printf("First index is %s\n",indexPage.readIndexName(1).c_str());
+    printf("Second index is %s\n",indexPage.readIndexName(2).c_str());
     return 0;
 }

@@ -27,9 +27,11 @@ public:
     bool attrUnique(string, string);    //参数：表名、列名
     string primaryKey(string);          //参数：表名；返回值：列名
     bool indexExisted(string);          //参数：索引名
+    bool attrExisted(string, string);   //参数：表名，列名
     string indexLocation(string);       //参数：索引名；返回值：表名、列名
     void insertIndex(string, string, string);   //参数：表名，列名，索引名
     void deleteIndex(string);           //参数：索引名
+    int indexNum(string, string);       //参数：表名，列名；返回值：该属性名上的索引个数
 };
 
 #endif /* CatalogManager_hpp */

@@ -26,6 +26,7 @@ public:
     int readPrevDel(int);                   //参数：当前这一条目位置编号
     string readIndexName(int);              //参数：索引存储位置编号
     string readTableName(int);              //参数：索引存储位置编号
+    string readAttrName(int);               //参数：索引存储位置编号
 };
 
 
