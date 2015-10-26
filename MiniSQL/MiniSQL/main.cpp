@@ -32,6 +32,8 @@ int main(int argc, const char * argv[]) {
     
     CatalogManager catalog;
     
+//    catalog.dropTable("student");
+    
     TableInfo table;
     table.tableName = "student";
     table.attrNum = 2;
@@ -45,12 +47,14 @@ int main(int argc, const char * argv[]) {
     table.attrName[1] = "studentname";
     table.primaryKeyLoc = 0;
     catalog.insertTable(table);
-    catalog.insertIndex("student", "studentname", "allname");
     catalog.insertIndex("student", "studentid", "studentNumber");
-//    catalog.deleteIndex("studentNumber");
+    catalog.deleteIndex("studentstudentid");
+    catalog.insertIndex("student", "studentid", "anotherIndex");
+    catalog.insertIndex("student", "studentid", "Yes,Again");
     string s;
     printf("primarykey = %s\n",catalog.primaryKey("student").c_str());
     printf("First index is %s\n",indexPage.readIndexName(1).c_str());
     printf("Second index is %s\n",indexPage.readIndexName(2).c_str());
+    printf("Third index is %s\n",indexPage.readIndexName(3).c_str());
     return 0;
 }

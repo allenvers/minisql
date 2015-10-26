@@ -22,6 +22,8 @@ public:
     string readAttrType(int);
     string readAttrIndex(int);
     char readAttrUnique(int);
+    int readAttrIndexNum(int);
+    void modifyAttrIndexNum(int, int);
 };
 
 #endif /* CatalogPage_hpp */

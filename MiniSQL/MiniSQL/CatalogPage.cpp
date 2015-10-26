@@ -58,3 +58,15 @@ char CatalogPage::readAttrUnique(int num)
 {
     return pageData[num*100+62];
 }
+
+int CatalogPage::readAttrIndexNum(int num)
+{
+    return *(int*)(pageData+num*100+82);
+}
+
+void CatalogPage::modifyAttrIndexNum(int num, int incr)
+{
+    int x;
+    x = *(int*)(pageData+num*100+82);
+    *(int*)(pageData+num*100+82)=x+incr;
+}

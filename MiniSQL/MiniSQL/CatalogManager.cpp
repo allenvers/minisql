@@ -25,7 +25,7 @@ void CatalogManager::insertTable(TableInfo table)
     
     if (tableExisted(table.tableName))
     {
-        printf("Insert table %s failed. Table already existed.\n",table.tableName.c_str());
+        printf("Failed to insert table %s. Table already existed.\n",table.tableName.c_str());
         return;
     }
     
@@ -42,6 +42,7 @@ void CatalogManager::insertTable(TableInfo table)
     }
     
     buffer.writePage(page);
+    printf("Inserted table %s successfully! Trying to build index on primary key automatelly...\n",table.tableName.c_str());
     insertIndex(table.tableName, table.attrName[table.primaryKeyLoc], table.tableName+table.attrName[table.primaryKeyLoc]);
 }
 
@@ -88,6 +89,7 @@ void CatalogManager::dropTable(string tableName)
         *(int*)indexPage.pageData=nn-k;
         buffer.writePage(indexPage);
         buffer.deleteTableCatalogFile(tableName);   //删除当前表的文件
+        printf("Dropped table %s successfully!\n",tableName.c_str());
     }
 }
 
@@ -242,42 +244,130 @@ void CatalogManager::insertIndex(string tableName, string attrName, string index
     IndexCatalogPage indexPage;
     if (indexExisted(indexName))
     {
-        printf("Insert index %s failed. Index name already existed!\n", indexName.c_str());
+        printf("Failed to insert index %s. Index name already existed!\n", indexName.c_str());
     }
     else
     if (!tableExisted(tableName))
     {
-        printf("Insert index %s failed. Table %s does not exist!\n", indexName.c_str(),tableName.c_str());
+        printf("Failed to insert index %s. Table %s does not exist!\n", indexName.c_str(),tableName.c_str());
     }
     else
     if (!attrExisted(tableName, attrName))
     {
-        printf("Insert index %s failed. Attribution %s on Table %s does not exist!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
+        printf("Failed to insert index %s. Attribution %s on Table %s does not exist!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
     }
     else
     if (!attrUnique(tableName, attrName))
     {
-        printf("Insert index %s failed. Attribution %s on Table %s is not unique!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
+        printf("Failed to insert index %s. Attribution %s on Table %s is not unique!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
     }
     else
     {
         indexPage.writeIndex(tableName, attrName, indexName);
-        //此处待补充，需要在catalogPage里面改当前属性上的索引总数，先push上去再说。。
+        
+        BufferManager buffer;
+        CatalogPage catalog;
+        int num,i;
+        
+        catalog.tableName = tableName;
+        num = (int)catalog.pageData[0];
+        for (i=0; i<num; i++)
+            if (catalog.readAttrName(i) == attrName)
+            {
+                catalog.modifyAttrIndexNum(i,1);
+                break;
+            }
+        
         //此处应该有个api接口，用来真正建索引
-        printf("Insert index %s(Attribution %s on Table %s) succeeded!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
+        printf("Inserted index %s(Attribution %s on Table %s) successfully!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
     }
 }
 
-void CatalogManager::deleteIndex(string)
+void CatalogManager::deleteIndex(string indexName)
 {
-    //待补充，大概操作是，找这个索引，如果没有，gg
-    //如果有，看在哪个表哪个属性，调用api接口真正删除这个索引
-    //然后再indexCatalogPage里面删掉
-    //再在catalogPage里面的对应属性上修改索引总数
+    if (!indexExisted(indexName))                   //如果没有这个索引
+    {
+        printf("Failed to delete index %s. Index does not existed.\n", indexName.c_str());
+    }
+    else                                            //有这个索引
+    {
+        BufferManager buffer;
+        CatalogPage catalog;
+        IndexCatalogPage indexPage;
+        string s,tableName,attrName;
+        int i,num,n,x;
+        
+        s=indexLocation(indexName);                 //找到这个索引
+        tableName="";                               //分割字符串
+        attrName="";
+        i=0;
+        while (s[i]!=0)
+        {
+            tableName=tableName+s[i];
+            i++;
+        }
+        
+        while (s[i]==' ')
+            i++;
+        
+        while (s[i]!=0)
+        {
+            attrName=attrName+s[i];
+            i++;
+        }
+
+        //此处应该有个api接口，用来真正删除索引
+        
+        indexPage.pageIndex=1;
+        buffer.readPage(indexPage);
+        n=*(int*)indexPage.pageData;
+        i=1;
+        while (i<=n)                                //开始在indexCatalogPage里逐条检查，删除这个索引
+        {
+            x=indexPage.readPrevDel(i);
+            if (x==0)                               //如果当前条未被删除
+            {
+                s=indexPage.readIndexName(i);
+                if (s==indexName)                   //如果找到要删的这条索引
+                {
+                    indexPage.deleteIndex(i);       //删掉它
+                    break;
+                }
+            }
+            else                                    //如果当前条已被删除，则最后一条位置后移
+                n++;
+
+            i++;
+        }
+        
+        catalog.tableName = tableName;              //在catalogPage里面的对应属性上修改索引总数
+        num = (int)catalog.pageData[0];
+        for (i=0; i<num; i++)
+            if (catalog.readAttrName(i) == attrName)
+            {
+                catalog.modifyAttrIndexNum(i,-1);
+                break;
+            }
+        
+        printf("Deleted index %s successfully!\n",indexName.c_str());
+    }
 }
 
 int CatalogManager::indexNum(string tableName, string attrName)
 {
-    //待补充，先push上去再说。。。
-    return 0;
+    CatalogPage catalog;
+    BufferManager buffer;
+    int num,i,x=-1;
+    
+    catalog.tableName = tableName;
+    buffer.readPage(catalog);
+    num = (int)catalog.pageData[0];
+    for (i=0; i<num; i++)
+        if (catalog.readAttrName(i) == attrName)
+        {
+            x = catalog.readAttrIndexNum(i);
+            return x;
+        }
+
+    return x;
 }

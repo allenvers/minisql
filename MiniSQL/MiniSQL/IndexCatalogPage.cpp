@@ -143,13 +143,15 @@ int IndexCatalogPage::writeIndex(string tableName, string attrName, string index
 
 void IndexCatalogPage::deleteIndex(int indexPos)
 {
-    int m,i,j;
+    int m,n,i,j;
     BufferManager buffer;
     
     pageIndex=1;                //读取最后被删除的位置编号
     buffer.readPage(*this);
-    m=*(int*)(pageData+4);
-    *(int*)(pageData+4)=indexPos;
+    n = *(int*)pageData;
+    m = *(int*)(pageData+4);
+    *(int*)pageData = n-1;
+    *(int*)(pageData+4) = indexPos;
     buffer.writePage(*this);    //更改首页信息
     i=(indexPos-1)/recordLimit+2;
     j=(indexPos-1)%recordLimit+1;
