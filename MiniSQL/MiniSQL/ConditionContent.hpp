@@ -19,6 +19,7 @@ class ConditionContent
     string attrValueStr;
     int attrValueInt;
     float attrValueFlo;
+    int attrType;
     string op; // "="、"<>"、"<"、">"、"<="、">="
 };
 
