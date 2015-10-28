@@ -61,7 +61,6 @@ class BPTreeNode {
     bool            isOverflow();
     bool            isRoot();
     bool            isLeaf();
-    void            split();
 
     bool            insertEntry(BPTreeEntry entry);
     bool            deleteEntry(BPTreeEntry entry);
