@@ -18,6 +18,14 @@ using namespace std;
 class BPTreeEntry {
 public:
     
+    BPTreeEntry() {}
+    ~BPTreeEntry() {}
+    
+    BPTreeEntry(const BPTreeEntry &entry) {
+        key = entry.key;
+        pagePointer = entry.pagePointer;
+    }
+    
     int getEntryDataLength();
     
     BPTreeKey       key;
