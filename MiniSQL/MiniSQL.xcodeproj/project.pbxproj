@@ -98,6 +98,8 @@
 				548B26B71BD386EC007D1C08 /* CatalogPage.cpp */,
 				548B26B41BD375F5007D1C08 /* TableInfo.cpp */,
 				548B26B51BD375F5007D1C08 /* TableInfo.hpp */,
+				31F39AA91BDE4AF00065524B /* BPTreeNode.cpp */,
+				31F39AAA1BDE4AF00065524B /* BPTreeNode.hpp */,
 				311C920D1BDC8296000709E0 /* BPTreeEntry.cpp */,
 				311C920E1BDC8296000709E0 /* BPTreeEntry.hpp */,
 				311C920F1BDC8296000709E0 /* BPTreeKey.cpp */,
@@ -170,6 +172,7 @@
 			files = (
 				543E9BFB1BE120B2002B4AB3 /* ConditionContent.cpp in Sources */,
 				311070C81BD11C9300C5B081 /* Global.h in Sources */,
+				31F39AAB1BDE4AF00065524B /* BPTreeNode.cpp in Sources */,
 				311070BE1BD118FC00C5B081 /* main.cpp in Sources */,
 				548B26B61BD375F5007D1C08 /* TableInfo.cpp in Sources */,
 				548B24551BD1E0E7007D1C08 /* CatalogManager.cpp in Sources */,

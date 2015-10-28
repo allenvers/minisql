@@ -12,6 +12,7 @@
 #include "assert.h"
 
 typedef int PageIndexType;
+const int MAXPATHDEEPTH = 100;
 const int PAGESIZE = 4096 * sizeof(char);
 const PageIndexType UNDEFINEED_PAGE_NUM = -1;
 
