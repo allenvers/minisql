@@ -16,11 +16,12 @@ BPTreeKey::BPTreeKey() {
     type = BPTreeKeyType::UNDEFINED;
 }
 
-BPTreeKey::BPTreeKey(BPTreeKey &key) {
+BPTreeKey::BPTreeKey(const BPTreeKey &key) {
     keyLen = key.keyLen;
     intData = key.intData;
     floatData = key.floatData;
     memcpy(charData, key.charData, keyLen);
+    memcpy(rawData, key.rawData, 256);
     type = key.type;
 }
 
@@ -149,4 +150,8 @@ bool BPTreeKey::operator==(const BPTreeKey &key) {
 
 bool BPTreeKey::operator> (const BPTreeKey &key) {
     return compare(key) == 1;
+}
+
+bool BPTreeKey::operator>=(const BPTreeKey &key) {
+    return (*this > key) || (*this == key);
 }

@@ -13,6 +13,7 @@
 		311C92111BDC8296000709E0 /* BPTreeEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 311C920D1BDC8296000709E0 /* BPTreeEntry.cpp */; };
 		311C92121BDC8296000709E0 /* BPTreeKey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 311C920F1BDC8296000709E0 /* BPTreeKey.cpp */; };
 		312A865E1BE156FE00BB6BE9 /* BPTreeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 312A865C1BE156FE00BB6BE9 /* BPTreeNode.cpp */; };
+		31A9F02C1BE2647200F6C17D /* BPTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31A9F02A1BE2647200F6C17D /* BPTree.cpp */; };
 		543E9BF81BE0A33A002B4AB3 /* SQLcommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 543E9BF61BE0A33A002B4AB3 /* SQLcommand.cpp */; };
 		543E9BFB1BE120B2002B4AB3 /* ConditionContent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 543E9BF91BE120B2002B4AB3 /* ConditionContent.cpp */; };
 		548B24551BD1E0E7007D1C08 /* CatalogManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 548B24531BD1E0E7007D1C08 /* CatalogManager.cpp */; };
@@ -46,6 +47,8 @@
 		311C92101BDC8296000709E0 /* BPTreeKey.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BPTreeKey.hpp; sourceTree = "<group>"; };
 		312A865C1BE156FE00BB6BE9 /* BPTreeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BPTreeNode.cpp; sourceTree = "<group>"; };
 		312A865D1BE156FE00BB6BE9 /* BPTreeNode.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BPTreeNode.hpp; sourceTree = "<group>"; };
+		31A9F02A1BE2647200F6C17D /* BPTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BPTree.cpp; sourceTree = "<group>"; };
+		31A9F02B1BE2647200F6C17D /* BPTree.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BPTree.hpp; sourceTree = "<group>"; };
 		543E9BF61BE0A33A002B4AB3 /* SQLcommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLcommand.cpp; sourceTree = "<group>"; };
 		543E9BF71BE0A33A002B4AB3 /* SQLcommand.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SQLcommand.hpp; sourceTree = "<group>"; };
 		543E9BF91BE120B2002B4AB3 /* ConditionContent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConditionContent.cpp; sourceTree = "<group>"; };
@@ -100,13 +103,15 @@
 				548B26B81BD386EC007D1C08 /* CatalogPage.hpp */,
 				548B26B71BD386EC007D1C08 /* CatalogPage.cpp */,
 				548B26B41BD375F5007D1C08 /* TableInfo.cpp */,
-				312A865C1BE156FE00BB6BE9 /* BPTreeNode.cpp */,
+				31A9F02A1BE2647200F6C17D /* BPTree.cpp */,
+				31A9F02B1BE2647200F6C17D /* BPTree.hpp */,
 				312A865D1BE156FE00BB6BE9 /* BPTreeNode.hpp */,
-				548B26B51BD375F5007D1C08 /* TableInfo.hpp */,
+				312A865C1BE156FE00BB6BE9 /* BPTreeNode.cpp */,
 				311C920D1BDC8296000709E0 /* BPTreeEntry.cpp */,
 				311C920E1BDC8296000709E0 /* BPTreeEntry.hpp */,
 				311C920F1BDC8296000709E0 /* BPTreeKey.cpp */,
 				311C92101BDC8296000709E0 /* BPTreeKey.hpp */,
+				548B26B51BD375F5007D1C08 /* TableInfo.hpp */,
 				548B24531BD1E0E7007D1C08 /* CatalogManager.cpp */,
 				548B24541BD1E0E7007D1C08 /* CatalogManager.hpp */,
 				311070C51BD1191500C5B081 /* Page.hpp */,
@@ -179,6 +184,7 @@
 				548B26B61BD375F5007D1C08 /* TableInfo.cpp in Sources */,
 				548B24551BD1E0E7007D1C08 /* CatalogManager.cpp in Sources */,
 				543E9BF81BE0A33A002B4AB3 /* SQLcommand.cpp in Sources */,
+				31A9F02C1BE2647200F6C17D /* BPTree.cpp in Sources */,
 				311C92111BDC8296000709E0 /* BPTreeEntry.cpp in Sources */,
 				312A865E1BE156FE00BB6BE9 /* BPTreeNode.cpp in Sources */,
 				311C92121BDC8296000709E0 /* BPTreeKey.cpp in Sources */,

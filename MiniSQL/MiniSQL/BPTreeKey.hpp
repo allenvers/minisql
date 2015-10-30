@@ -28,7 +28,7 @@ enum class BPTreeKeyType {
 class BPTreeKey {
 public:
     BPTreeKey();
-    BPTreeKey(BPTreeKey &key);
+    BPTreeKey(const BPTreeKey &key);
     ~BPTreeKey();
     
     int compare(const BPTreeKey &key);
@@ -39,6 +39,7 @@ public:
     bool operator<  (const BPTreeKey &key);
     bool operator== (const BPTreeKey &key);
     bool operator>  (const BPTreeKey &key);
+    bool operator>= (const BPTreeKey &key);
     
     BPTreeKeyType   type;
     char            charData[256];

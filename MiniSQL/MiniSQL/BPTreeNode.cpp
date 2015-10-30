@@ -20,18 +20,16 @@ void BPTreeNode::writeNodeRawData() {
 
 void BPTreeNode::convertToRawData() {
     char *cursor = nodePage.pageData;
-    memcpy(cursor, &entryNumber, sizeof(entryNumber));
-    cursor += sizeof(entryNumber);
-    memcpy(cursor, &keyDataLength, sizeof(keyDataLength));
-    cursor += sizeof(keyDataLength);
-    memcpy(cursor, &keyType, sizeof(keyType));
-    cursor += sizeof(keyType);
-    memcpy(cursor, &parentNodePagePointer, sizeof(parentNodePagePointer));
-    cursor += sizeof(parentNodePagePointer);
-    memcpy(cursor, &siblingNodePagePointer, sizeof(siblingNodePagePointer));
-    cursor += sizeof(siblingNodePagePointer);
-    memcpy(cursor, &nodeType, sizeof(nodeType));
-    cursor += sizeof(nodeType);
+    BPTreeNodeHeader &nodeHeader = (BPTreeNodeHeader&)(*cursor);
+    
+    nodeHeader.entryNumber = entryNumber;
+    nodeHeader.keyDataLength = keyDataLength;
+    nodeHeader.keyType = keyType;
+    nodeHeader.parentNodePagePointer = parentNodePagePointer;
+    nodeHeader.siblingNodePagePointer = siblingNodePagePointer;
+    nodeHeader.nodeType = nodeType;
+    
+    cursor += sizeof(BPTreeNodeHeader);
 
     for (int i = 0; i < entryNumber; ++i) {
         nodeEntries[i].key.convertToRawData();
@@ -44,18 +42,16 @@ void BPTreeNode::convertToRawData() {
 
 void BPTreeNode::parseFromRawData() {
     char *cursor = nodePage.pageData;
-    memcpy(&entryNumber, cursor, sizeof(entryNumber));
-    cursor += sizeof(entryNumber);
-    memcpy(&keyDataLength, cursor, sizeof(keyDataLength));
-    cursor += sizeof(keyDataLength);
-    memcpy(&keyType, cursor, sizeof(keyType));
-    cursor += sizeof(keyType);
-    memcpy(&parentNodePagePointer, cursor, sizeof(parentNodePagePointer));
-    cursor += sizeof(parentNodePagePointer);
-    memcpy(&siblingNodePagePointer, cursor, sizeof(siblingNodePagePointer));
-    cursor += sizeof(siblingNodePagePointer);
-    memcpy(&nodeType, cursor, sizeof(nodeType));
-    cursor += sizeof(nodeType);
+    BPTreeNodeHeader &nodeHeader = (BPTreeNodeHeader&)(*nodePage.pageData);
+    
+    entryNumber = nodeHeader.entryNumber;
+    keyDataLength = nodeHeader.keyDataLength;
+    keyType = nodeHeader.keyType;
+    parentNodePagePointer = nodeHeader.parentNodePagePointer;
+    siblingNodePagePointer = nodeHeader.siblingNodePagePointer;
+    nodeType = nodeHeader.nodeType;
+    
+    cursor += sizeof(BPTreeNodeHeader);
     
     for (int i = 0; i < entryNumber; ++i) {
         nodeEntries[i].key.type = keyType;
@@ -73,12 +69,17 @@ bool BPTreeNode::isOverflow() {
     return getNodeRawDataLength() > PAGESIZE;
 }
 
+bool BPTreeNode::isUnderflow() {
+    return getNodeRawDataLength() < (PAGESIZE - sizeof(BPTreeNodeHeader) / 2);
+}
+
 bool BPTreeNode::isLeaf() {
     return nodeType == BPTreeNodeType::BPTreeLeafNode;
 }
 
-bool BPTreeNode::isRoot() {
-    return nodeType == BPTreeNodeType::BPTreeRootNode;
+bool BPTreeNode::isEmpty() {
+    assert(entryNumber >= 0);
+    return (entryNumber <= 1);
 }
 
 bool BPTreeNode::insertEntry(BPTreeEntry entry) {
@@ -120,16 +121,23 @@ bool BPTreeNode::deleteEntryAtIndex(int index) {
 
 int BPTreeNode::getNodeRawDataLength() {
     int accumulator = 0;
-    accumulator += sizeof(entryNumber);
-    accumulator += sizeof(keyDataLength);
-    accumulator += sizeof(keyType);
-    accumulator += sizeof(parentNodePagePointer);
-    accumulator += sizeof(siblingNodePagePointer);
-    accumulator += sizeof(nodeType);
+    
+    accumulator += sizeof(BPTreeNodeHeader);
 
     for (int i = 0; i < entryNumber; ++i) {
         accumulator += nodeEntries[i].getEntryDataLength();
     }
 
     return accumulator;
+}
+
+PageIndexType BPTreeNode::getPagePointerForKey(BPTreeKey key) {
+    assert(key.type != BPTreeKeyType::UNDEFINED);
+    if (key < nodeEntries[1].key) return nodeEntries[0].pagePointer;
+    else {
+        for (int i = 1; i < entryNumber; i++)
+            if (key >= nodeEntries[i].key)
+                return nodeEntries[i].pagePointer;
+    }
+    assert(false); // pointer not found
 }

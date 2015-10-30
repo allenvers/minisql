@@ -23,13 +23,22 @@
 using namespace std;
 
 enum class BPTreeNodeType {
-    BPTreeUndefinedNode,
-    BPTreeRootNode,
+    BPTreeUndefinedNode = 0,
     BPTreeInternalNode,
     BPTreeLeafNode
 };
 
+struct BPTreeNodeHeader {
+    int             entryNumber;
+    int             keyDataLength;
+    BPTreeKeyType   keyType;
+    PageIndexType   parentNodePagePointer;
+    PageIndexType   siblingNodePagePointer;
+    BPTreeNodeType  nodeType;
+};
+
 class BPTreeNode {
+public:
     BPTreeNode() {
         entryNumber            = 1; //第一个entry只会用指针部分
         keyDataLength          = 0;
@@ -49,6 +58,8 @@ class BPTreeNode {
         nodePage               = node.nodePage;
         nodeType               = node.nodeType;
         memcpy(nodePath, node.nodePath, MAXPATHDEEPTH * sizeof(PageIndexType));
+        for (int i = 0; i < entryNumber; ++i)
+            nodeEntries[i] = node.nodeEntries[i];
     }
     ~BPTreeNode() {}
 
@@ -57,10 +68,21 @@ class BPTreeNode {
 
     void            convertToRawData();
     void            parseFromRawData();
+    
+    void            readNode() {
+        readNodeRawData();
+        parseFromRawData();
+    }
+    void            writeNode() {
+        convertToRawData();
+        writeNodeRawData();
+    }
 
     bool            isOverflow();
-    bool            isRoot();
+    bool            isUnderflow();
+//    bool            isRoot();
     bool            isLeaf();
+    bool            isEmpty();
 
     bool            insertEntry(BPTreeEntry entry);
     bool            deleteEntry(BPTreeEntry entry);
@@ -69,6 +91,8 @@ class BPTreeNode {
     bool            deleteEntryAtIndex(int index);
 
     int             getNodeRawDataLength();
+    
+    PageIndexType   getPagePointerForKey(BPTreeKey key);
 
     BPTreeEntry     nodeEntries[1024];
     int             entryNumber;
