@@ -64,6 +64,12 @@ void BPTreeNode::parseFromRawData() {
     }
 }
 
+void BPTreeNode::clearNode() {
+    entryNumber = 1;
+    parentNodePagePointer = UNDEFINEED_PAGE_NUM;
+    siblingNodePagePointer = UNDEFINEED_PAGE_NUM;
+}
+
 
 bool BPTreeNode::isOverflow() {
     return getNodeRawDataLength() > PAGESIZE;

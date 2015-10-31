@@ -38,26 +38,37 @@ public:
             node.siblingNodePagePointer = UNDEFINEED_PAGE_NUM;
             node.nodeType = BPTreeNodeType::BPTreeLeafNode;
             node.writeNode();
+            // 当索引文件第一次被访问，初始化Root节点
         }
     }
     
     ~BPTree() {}
     
-    PageIndexType getLeadingPage();
+    BPTreeNode          splitLeaveNode(BPTreeNode &node);
+    BPTreeNode          splitInternalNode(BPTreeNode &node);
+    BPTreeNode          createNode();
+    bool                deleteNode(BPTreeNode &node);
     
-    BPTreeNode getNodeAtPage(PageIndexType pageIndex);
+    PageIndexType       getLeadingPage();
+    PageIndexType       getLeadingPageAtNode(BPTreeNode node);
     
-    bool insertKeyPointerPair(BPTreeKey key, PageIndexType pagePointer);
+    BPTreeNode          getNodeAtPage(PageIndexType pageIndex);
     
-    bool isRoot(BPTreeNode node);
+    bool                insertKeyPointerPair(BPTreeKey key, PageIndexType pagePointer);
+    bool                insertEntryIntoNode(BPTreeEntry entry, BPTreeNode node);
+    bool                updateEntryIntoNode(BPTreeEntry entry, BPTreeNode node);
+    PageIndexType       searchKeyForPagePointer(BPTreeKey key);
+    PageIndexType       searchKeyForPagePointerInNode(BPTreeKey key, BPTreeNode node);
     
-    BPTreeKey getMaxKey(BPTreeNode node);
-    BPTreeKey getMinKey(BPTreeNode node);
+    bool                isRoot(BPTreeNode node);
     
-    string          tableName;
-    string          attributeName;
-    BPTreeKeyType   keyType;
-    int             keyDataLength;
+    BPTreeKey           getMaxKey(BPTreeNode node);
+    BPTreeKey           getMinKey(BPTreeNode node);
+    
+    string              tableName;
+    string              attributeName;
+    BPTreeKeyType       keyType;
+    int                 keyDataLength;
 };
 
 #endif /* BPTree_hpp */

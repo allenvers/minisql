@@ -46,7 +46,6 @@ public:
         parentNodePagePointer  = UNDEFINEED_PAGE_NUM;
         siblingNodePagePointer = UNDEFINEED_PAGE_NUM;
         nodeType               = BPTreeNodeType::BPTreeUndefinedNode;
-        memset(nodePath, 0, MAXPATHDEEPTH * sizeof(PageIndexType));
     }
 
     BPTreeNode(const BPTreeNode &node) {
@@ -57,7 +56,6 @@ public:
         siblingNodePagePointer = node.siblingNodePagePointer;
         nodePage               = node.nodePage;
         nodeType               = node.nodeType;
-        memcpy(nodePath, node.nodePath, MAXPATHDEEPTH * sizeof(PageIndexType));
         for (int i = 0; i < entryNumber; ++i)
             nodeEntries[i] = node.nodeEntries[i];
     }
@@ -77,10 +75,11 @@ public:
         convertToRawData();
         writeNodeRawData();
     }
+    
+    void            clearNode();
 
     bool            isOverflow();
     bool            isUnderflow();
-//    bool            isRoot();
     bool            isLeaf();
     bool            isEmpty();
 
@@ -101,7 +100,6 @@ public:
     PageIndexType   parentNodePagePointer;
     PageIndexType   siblingNodePagePointer;
     Page            nodePage;
-    PageIndexType   nodePath[MAXPATHDEEPTH];
     BPTreeNodeType  nodeType;
 };
 

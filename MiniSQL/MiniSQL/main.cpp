@@ -12,11 +12,17 @@
 #include "CatalogManager.hpp"
 #include "IndexCatalogPage.hpp"
 #include "TableInfo.cpp"
+//#include "BPTree.hpp"
 
 using namespace std;
 
+void testBPTree() {
+//    BPTree tree("test", "test", BPTreeKeyType::INT, 4);
+}
+
 int main(int argc, const char * argv[]) {
-    
+    testBPTree();
+   /*
     BufferManager buffer{};
     IndexCatalogPage indexPage;
 //    indexPage.writeInitialPage();   //这行只在第一次运行的时候要用，用于初始化存放index的文件
@@ -55,6 +61,8 @@ int main(int argc, const char * argv[]) {
     printf("primarykey = %s\n",catalog.primaryKey("student").c_str());
     printf("First index is %s\n",indexPage.readIndexName(1).c_str());
     printf("Second index is %s\n",indexPage.readIndexName(2).c_str());
-    printf("Third index is %s\n",indexPage.readIndexName(3).c_str());
+    printf("Third index is %s\n",indexPage.readIndexName(3).c_str());*/
+    
+    
     return 0;
 }
