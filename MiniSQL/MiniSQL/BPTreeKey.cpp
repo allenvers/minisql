@@ -85,7 +85,7 @@ int BPTreeKey::compare(const BPTreeKey &key) {
 }
 
 void BPTreeKey::convertToRawData() {
-    assert(type != BPTreeKeyType::UNDEFINED);
+//    assert(type != BPTreeKeyType::UNDEFINED); For leaf
     
     switch (type) {
         case BPTreeKeyType::INT: {

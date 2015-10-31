@@ -29,16 +29,20 @@ public:
     BufferManager() {
         
         if (opendir(recordFilesDirectory.c_str()) == NULL) {
-            assert(mkdir(recordFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+//            assert(mkdir(recordFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+            mkdir(recordFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
         if (opendir(indexFilesDirectory.c_str()) == NULL) {
-            assert(mkdir(indexFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+//            assert(mkdir(indexFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+            mkdir(indexFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
         if (opendir(recordCatalogFilesDirectory.c_str()) == NULL) {
-            assert(mkdir(recordCatalogFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+//            assert(mkdir(recordCatalogFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+            mkdir(recordCatalogFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
         if (opendir(indexCatalogFilesDirectory.c_str()) == NULL) {
-            assert(mkdir(indexCatalogFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+//            assert(mkdir(indexCatalogFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+            mkdir(indexCatalogFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
         // 初始化存放文件的文件夹，根据表名以及索引键建立文件
     }

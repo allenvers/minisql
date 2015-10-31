@@ -12,7 +12,7 @@
 #include "BPTreeKey.hpp"
 #include "BPTreeEntry.hpp"
 #include "BPTreeNode.hpp"
-#include "BufferManager.cpp"
+#include "BufferManager.hpp"
 #include "Global.h"
 #include "Page.hpp"
 #include <string>

@@ -12,12 +12,28 @@
 #include "CatalogManager.hpp"
 #include "IndexCatalogPage.hpp"
 #include "TableInfo.cpp"
-//#include "BPTree.hpp"
+#include "BPTree.hpp"
 
 using namespace std;
 
 void testBPTree() {
-//    BPTree tree("test", "test", BPTreeKeyType::INT, 4);
+    BPTree tree("test", "test", BPTreeKeyType::INT, 4);
+    BPTreeKey key;
+    key.keyLen = 4;
+    key.type = BPTreeKeyType::INT;
+    for (int i = 1; i <= 10000000; i++) {
+        key.intData = i;
+        tree.insertKeyPointerPair(key, 110);
+    }
+//    BPTreeNode node = tree.getNodeAtPage(ROOTPAGE);
+//    BPTreeNode node2 = tree.getNodeAtPage(2);
+//    BPTreeNode node3 = tree.getNodeAtPage(3);
+    cout << tree.getNodeAtPage(ROOTPAGE).entryNumber << endl;
+}
+
+void testBpNode() {
+    BPTreeNode node;
+    node.nodeType = BPTreeNodeType::BPTreeLeafNode;
 }
 
 int main(int argc, const char * argv[]) {

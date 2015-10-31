@@ -59,7 +59,7 @@ void BPTreeNode::parseFromRawData() {
         memcpy(nodeEntries[i].key.rawData, cursor, nodeEntries[i].getEntryDataLength());
         nodeEntries[i].key.parseFromRawData();
         cursor += nodeEntries[i].key.getKeyDataLength();
-        memcpy(cursor, &nodeEntries[i].pagePointer, sizeof(PageIndexType));
+        memcpy(&nodeEntries[i].pagePointer, cursor, sizeof(PageIndexType));
         cursor += sizeof(PageIndexType);
     }
 }

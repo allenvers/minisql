@@ -96,18 +96,20 @@ bool BPTree::insertKeyPointerPair(BPTreeKey key, PageIndexType pagePointer) {
     BPTreeEntry entry;
     entry.key         = key;
     entry.pagePointer = pagePointer;
-    return insertEntryIntoNode(entry, getNodeAtPage(ROOTPAGE));
+    return this->insertEntryIntoNode(entry, getNodeAtPage(ROOTPAGE));
 }
 
 bool BPTree::insertEntryIntoNode(BPTreeEntry entry, BPTreeNode node) {
     assert(node.nodeType != BPTreeNodeType::BPTreeUndefinedNode);
     if (node.nodeType == BPTreeNodeType::BPTreeInternalNode) {
         if (entry.key < node.nodeEntries[1].key) {
-            insertEntryIntoNode(entry, getNodeAtPage(node.nodeEntries[0].pagePointer));
+            return this->insertEntryIntoNode(entry, getNodeAtPage(node.nodeEntries[0].pagePointer));
         } else {
             for (int i = 1; i < node.entryNumber; ++i) {
-                if (entry.key >= node.nodeEntries[i].key)
-                    return insertEntryIntoNode(entry, getNodeAtPage(node.nodeEntries[i].pagePointer));
+                if (entry.key >= node.nodeEntries[i].key) {
+                    BPTreeNode node2 = getNodeAtPage(node.nodeEntries[i].pagePointer);
+                    return this->insertEntryIntoNode(entry, getNodeAtPage(node.nodeEntries[i].pagePointer));
+                }
             }
         }
     } else if (node.nodeType == BPTreeNodeType::BPTreeLeafNode) {
@@ -128,7 +130,7 @@ bool BPTree::insertEntryIntoNode(BPTreeEntry entry, BPTreeNode node) {
                 BPTreeNode leftNode = createNode();
                 Page tempPage = leftNode.nodePage;
                 leftNode = node;
-                node.nodePage = tempPage;
+                leftNode.nodePage = tempPage;
                 BPTreeNode rightNode = splitLeaveNode(leftNode);
                 
                 leftNode.parentNodePagePointer = node.nodePage.pageIndex;
@@ -158,35 +160,37 @@ bool BPTree::updateEntryIntoNode(BPTreeEntry entry, BPTreeNode node) {
     if (!node.isOverflow()) {
         node.writeNode();
         return true;
-    } if (!isRoot(node)) {
-        BPTreeNode newNode = splitInternalNode(node);
-        node.writeNode();
-        newNode.writeNode();
-        BPTreeEntry entry;
-        entry.key = getMinKey(newNode);
-        entry.pagePointer = newNode.nodePage.pageIndex;
-        return updateEntryIntoNode(entry, getNodeAtPage(node.parentNodePagePointer));
     } else {
-        BPTreeNode leftNode = createNode();
-        Page tempPage = leftNode.nodePage;
-        leftNode = node;
-        node.nodePage = tempPage;
-        BPTreeNode rightNode = splitInternalNode(leftNode);
-        
-        leftNode.parentNodePagePointer = node.nodePage.pageIndex;
-        rightNode.parentNodePagePointer = node.nodePage.pageIndex;
-        
-        leftNode.writeNode();
-        rightNode.writeNode();
-        
-        node.clearNode();
-        node.entryNumber = 2;
-        node.nodeEntries[0].pagePointer = leftNode.nodePage.pageIndex;
-        node.nodeEntries[1].pagePointer = rightNode.nodePage.pageIndex;
-        node.nodeEntries[1].key = getMinKey(rightNode);
-        node.nodeType = BPTreeNodeType::BPTreeInternalNode;
-        node.writeNode();
-        return true;
+        if (!isRoot(node)) {
+            BPTreeNode newNode = splitInternalNode(node);
+            node.writeNode();
+            newNode.writeNode();
+            BPTreeEntry entry;
+            entry.key = getMinKey(newNode);
+            entry.pagePointer = newNode.nodePage.pageIndex;
+            return updateEntryIntoNode(entry, getNodeAtPage(node.parentNodePagePointer));
+        } else {
+            BPTreeNode leftNode = createNode();
+            Page tempPage = leftNode.nodePage;
+            leftNode = node;
+            leftNode.nodePage = tempPage;
+            BPTreeNode rightNode = splitInternalNode(leftNode);
+            
+            leftNode.parentNodePagePointer = node.nodePage.pageIndex;
+            rightNode.parentNodePagePointer = node.nodePage.pageIndex;
+            
+            leftNode.writeNode();
+            rightNode.writeNode();
+            
+            node.clearNode();
+            node.entryNumber = 2;
+            node.nodeEntries[0].pagePointer = leftNode.nodePage.pageIndex;
+            node.nodeEntries[1].pagePointer = rightNode.nodePage.pageIndex;
+            node.nodeEntries[1].key = getMinKey(rightNode);
+            node.nodeType = BPTreeNodeType::BPTreeInternalNode;
+            node.writeNode();
+            return true;
+        }
     }
     assert(false);
     return false;

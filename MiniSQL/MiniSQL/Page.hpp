@@ -37,7 +37,7 @@ public:
     Page(const Page &page) {
         this->tableName = page.tableName;
         this->attributeName = page.attributeName;
-        this->pageType = pageType;
+        this->pageType = page.pageType;
         this->pageIndex = page.pageIndex;
         fileHandle = page.fileHandle;
         memcpy(this->pageData, page.pageData, PAGESIZE);

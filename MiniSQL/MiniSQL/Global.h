@@ -14,6 +14,8 @@
 typedef int PageIndexType;
 const int MAXPATHDEEPTH = 100;
 const int PAGESIZE = 4096 * sizeof(char);
+const int NODESIZE = 1024;
+//const int PAGESIZE = 50 * sizeof(char);
 const PageIndexType ROOTPAGE = 1;
 const PageIndexType UNDEFINEED_PAGE_NUM = -1;
 

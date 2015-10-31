@@ -40,6 +40,7 @@ struct BPTreeNodeHeader {
 class BPTreeNode {
 public:
     BPTreeNode() {
+        nodeEntries            = new BPTreeEntry[NODESIZE];
         entryNumber            = 1; //第一个entry只会用指针部分
         keyDataLength          = 0;
         keyType                = BPTreeKeyType::UNDEFINED;
@@ -49,6 +50,7 @@ public:
     }
 
     BPTreeNode(const BPTreeNode &node) {
+        nodeEntries            = new BPTreeEntry[NODESIZE];
         entryNumber            = node.entryNumber;
         keyDataLength          = node.keyDataLength;
         keyType                = node.keyType;
@@ -59,7 +61,11 @@ public:
         for (int i = 0; i < entryNumber; ++i)
             nodeEntries[i] = node.nodeEntries[i];
     }
-    ~BPTreeNode() {}
+    ~BPTreeNode() {
+        if (nodeEntries != NULL) delete [] nodeEntries;
+        nodeEntries = NULL;
+    }
+    
 
     void            readNodeRawData();
     void            writeNodeRawData();
@@ -93,7 +99,7 @@ public:
     
     PageIndexType   getPagePointerForKey(BPTreeKey key);
 
-    BPTreeEntry     nodeEntries[1024];
+    BPTreeEntry     *nodeEntries;
     int             entryNumber;
     int             keyDataLength;
     BPTreeKeyType   keyType;
