@@ -28,7 +28,7 @@ public:
         this->attributeName = attributeName;
         this->keyType = keyType;
         this->keyDataLength = keyDataLength;
-        BPTreeNode node = getNodeAtPage(ROOTPAGE);
+        BPTreeNode node(getNodeAtPage(ROOTPAGE));
         if (node.nodeType == BPTreeNodeType::BPTreeUndefinedNode) {
             node.nodeEntries[0].pagePointer = UNDEFINEED_PAGE_NUM;
             node.entryNumber = 1;

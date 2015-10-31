@@ -39,8 +39,8 @@ struct BPTreeNodeHeader {
 
 class BPTreeNode {
 public:
-    BPTreeNode() {
-        nodeEntries            = new BPTreeEntry[NODESIZE];
+    explicit BPTreeNode() {
+        nodeEntries            = new BPTreeEntry[1024];
         entryNumber            = 1; //第一个entry只会用指针部分
         keyDataLength          = 0;
         keyType                = BPTreeKeyType::UNDEFINED;
@@ -50,7 +50,7 @@ public:
     }
 
     BPTreeNode(const BPTreeNode &node) {
-        nodeEntries            = new BPTreeEntry[NODESIZE];
+        nodeEntries            = new BPTreeEntry[1024];
         entryNumber            = node.entryNumber;
         keyDataLength          = node.keyDataLength;
         keyType                = node.keyType;
@@ -64,6 +64,19 @@ public:
     ~BPTreeNode() {
         if (nodeEntries != NULL) delete [] nodeEntries;
         nodeEntries = NULL;
+    }
+    
+    BPTreeNode& operator=(const BPTreeNode &node) {
+        entryNumber            = node.entryNumber;
+        keyDataLength          = node.keyDataLength;
+        keyType                = node.keyType;
+        parentNodePagePointer  = node.parentNodePagePointer;
+        siblingNodePagePointer = node.siblingNodePagePointer;
+        nodePage               = node.nodePage;
+        nodeType               = node.nodeType;
+        for (int i = 0; i < entryNumber; ++i)
+            nodeEntries[i] = node.nodeEntries[i];
+        return *this;
     }
     
 

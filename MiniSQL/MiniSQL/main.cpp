@@ -21,9 +21,10 @@ void testBPTree() {
     BPTreeKey key;
     key.keyLen = 4;
     key.type = BPTreeKeyType::INT;
-    for (int i = 1; i <= 10000000; i++) {
+    for (int i = 1; i <= 10000000000; i++) {
         key.intData = i;
         tree.insertKeyPointerPair(key, 110);
+        cout << i << endl;
     }
 //    BPTreeNode node = tree.getNodeAtPage(ROOTPAGE);
 //    BPTreeNode node2 = tree.getNodeAtPage(2);

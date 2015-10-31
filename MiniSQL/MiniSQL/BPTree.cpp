@@ -9,7 +9,7 @@
 #include "BPTree.hpp"
 
 BPTreeNode BPTree::splitLeaveNode(BPTreeNode &node) {
-    BPTreeNode newNode = createNode();
+    BPTreeNode newNode(createNode());
     Page tempPage = newNode.nodePage;
     newNode = node;
     newNode.nodePage = tempPage;
@@ -96,14 +96,16 @@ bool BPTree::insertKeyPointerPair(BPTreeKey key, PageIndexType pagePointer) {
     BPTreeEntry entry;
     entry.key         = key;
     entry.pagePointer = pagePointer;
-    return this->insertEntryIntoNode(entry, getNodeAtPage(ROOTPAGE));
+    BPTreeNode tempNode = getNodeAtPage(ROOTPAGE);
+    return this->insertEntryIntoNode(entry, tempNode);
 }
 
 bool BPTree::insertEntryIntoNode(BPTreeEntry entry, BPTreeNode node) {
     assert(node.nodeType != BPTreeNodeType::BPTreeUndefinedNode);
     if (node.nodeType == BPTreeNodeType::BPTreeInternalNode) {
         if (entry.key < node.nodeEntries[1].key) {
-            return this->insertEntryIntoNode(entry, getNodeAtPage(node.nodeEntries[0].pagePointer));
+            BPTreeNode tempNode = getNodeAtPage(node.nodeEntries[0].pagePointer);
+            return this->insertEntryIntoNode(entry, tempNode);
         } else {
             for (int i = 1; i < node.entryNumber; ++i) {
                 if (entry.key >= node.nodeEntries[i].key) {
