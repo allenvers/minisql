@@ -54,6 +54,8 @@ public:
     
     BPTreeNode          getNodeAtPage(PageIndexType pageIndex);
     
+    void                updateParent(BPTreeNode node);
+    
     bool                insertKeyPointerPair(BPTreeKey key, PageIndexType pagePointer);
     bool                insertEntryIntoNode(BPTreeEntry entry, BPTreeNode node);
     bool                updateEntryIntoNode(BPTreeEntry entry, BPTreeNode node);

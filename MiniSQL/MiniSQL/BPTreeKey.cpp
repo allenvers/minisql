@@ -67,14 +67,14 @@ int BPTreeKey::compare(const BPTreeKey &key) {
         case BPTreeKeyType::FLOAT: {
             if (floatData > key.floatData)
                 return 1;
-            else if ( (floatData - key.floatData) < 0.000001)
+            else if ( fabs(floatData - key.floatData) < 0.000001)
                 return 0;
             else return -1;
             break;
         }
             
         case BPTreeKeyType::CHAR: {
-            return strncmp(charData, key.charData, 256);
+            return strncmp(charData, key.charData, keyLen);
             break;
         }
             
@@ -141,7 +141,7 @@ void BPTreeKey::parseFromRawData() {
 }
 
 bool BPTreeKey::operator< (const BPTreeKey &key) {
-    return compare(key) == -1;
+    return compare(key) < 0;
 }
 
 bool BPTreeKey::operator==(const BPTreeKey &key) {
@@ -149,7 +149,7 @@ bool BPTreeKey::operator==(const BPTreeKey &key) {
 }
 
 bool BPTreeKey::operator> (const BPTreeKey &key) {
-    return compare(key) == 1;
+    return compare(key) > 0;
 }
 
 bool BPTreeKey::operator>=(const BPTreeKey &key) {
