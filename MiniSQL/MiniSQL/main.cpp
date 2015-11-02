@@ -28,10 +28,11 @@ void printTree(BPTree &tree, BPTreeNode node, int deepth) {
         for (int j = 0; j < deepth; j++)
             cout << "-";
         cout << "deepth " << deepth << " ";
-        cout << "Leaf node is " ;//<< endl; //<< node.nodeEntries[1].key.intData << endl;
+        cout << "Leaf node is ";//<< node.nodeEntries[1].key.intData << endl;
         for (int i = 1; i < node.entryNumber; ++i) {
-                for (int j = 0; j < 20; j++)
-                    cout << node.nodeEntries[i].key.charData[j];
+            cout << node.nodeEntries[i].key.intData;
+//                for (int j = 0; j < 20; j++)
+//                    cout << node.nodeEntries[i].key.charData[j];
             cout << " ";
         }
         cout << " page " << node.nodePage.pageIndex;
@@ -48,15 +49,42 @@ void printTree(BPTree &tree, BPTreeNode node, int deepth) {
             for (int j = 0; j < deepth; j++)
                 cout << "-";
             cout << "internal node pointer ";
-//            cout << node.nodeEntries[i].key.intData << endl;
-            for (int k = 0; k < 20; k++)
-                cout << node.nodeEntries[i].key.charData[k];
-            cout << endl;
+            cout << node.nodeEntries[i].key.intData << endl;
+//            for (int k = 0; k < 20; k++)
+//                cout << node.nodeEntries[i].key.charData[k];
+//            cout << endl;
             
             
             printTree(tree, tree.getNodeAtPage(node.nodeEntries[i].pagePointer), deepth + 1);
         }
     }
+}
+
+void testDelete() {
+//    srand(time(0));
+    BPTree tree("test2", "test2", BPTreeKeyType::INT, 4);
+    BPTreeKey key;
+    key.keyLen = 4;
+    key.type = BPTreeKeyType::INT;
+    int saver[100000];
+    for (int i = 0; i < 5000; i++) {
+        key.intData = rand() % 100000;
+        saver[i] = key.intData;
+        tree.insertKeyPointerPair(key, i);
+//        cout << "deleting " << i << endl;
+//    printTree(tree, tree.getNodeAtPage(ROOTPAGE), 1);
+//        cout << endl << endl << endl;
+    }
+    printTree(tree, tree.getNodeAtPage(ROOTPAGE), 1);
+    cout<<endl<<endl<<endl;
+    for (int i = 4999; i >= 0; i--) {
+        key.intData = saver[i];
+        if (tree.deleteKey(key) == false) cout << "110" << endl;
+        if (key.intData == 34888) {
+            tree.searchKeyForPagePointer(key);
+        }
+    }
+//    printTree(tree, tree.getNodeAtPage(ROOTPAGE), 1);
 }
 
 void testBPTree() {
@@ -71,13 +99,19 @@ void testBPTree() {
 //        cout << tree.searchKeyForPagePointer(node.nodeEntries[i].key) << endl;
 //    }
     printTree(tree, tree.getNodeAtPage(ROOTPAGE),1);
+//    cout << tree.getLeadingPage() << endl;
+    PageIndexType leading = tree.getLeadingPage();
+    
+    for (;leading != UNDEFINEED_PAGE_NUM; leading = tree.getNodeAtPage(leading).siblingNodePagePointer) {
+        cout << leading << endl;
+    }
     
     for (int i = 1; i <= 10000; i++) {
         for (int j = 0; j < 20; j++)
             key.charData[j] = rand() % 26 + 'a';
         key.charData[20] = '\0';
-        cout << i << endl;
-        cout << string(key.charData) << endl;
+//        cout << i << endl;
+//        cout << string(key.charData) << endl;
         
 //        key.floatData = rand() % 100000000;
 //        key.intData = 2001;
@@ -117,9 +151,22 @@ void testKey() {
     cout << key2.compare(key1) << endl;
 }
 
+void play3488() {
+    BPTree tree("test2", "test2", BPTreeKeyType::INT, 4);
+    BPTreeKey key;
+    key.keyLen = 4;
+    key.type = BPTreeKeyType::INT;
+    key.intData = 34888;
+    cout << tree.searchKeyForPagePointer(key) << endl;
+    tree.deleteKey(key);
+    cout << tree.searchKeyForPagePointer(key) << endl;
+}
+
 int main(int argc, const char * argv[]) {
+//    play3488();
 //    testKey();
-    testBPTree();
+//    testBPTree();
+    testDelete();
    /*
     BufferManager buffer{};
     IndexCatalogPage indexPage;

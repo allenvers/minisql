@@ -59,6 +59,12 @@ public:
     bool                insertKeyPointerPair(BPTreeKey key, PageIndexType pagePointer);
     bool                insertEntryIntoNode(BPTreeEntry entry, BPTreeNode node);
     bool                updateEntryIntoNode(BPTreeEntry entry, BPTreeNode node);
+    
+    bool                deleteKey(BPTreeKey key);
+    bool                deleteKeyInNode(BPTreeKey key, BPTreeNode node);
+    bool                handelUnderflowInChildNodeOfNodePage(BPTreeNode node, PageIndexType childPage);
+    
+    
     PageIndexType       searchKeyForPagePointer(BPTreeKey key);
     PageIndexType       searchKeyForPagePointerInNode(BPTreeKey key, BPTreeNode node);
     

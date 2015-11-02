@@ -103,7 +103,7 @@ public:
     bool            isEmpty();
 
     bool            insertEntry(BPTreeEntry entry);
-    bool            deleteEntry(BPTreeEntry entry);
+    bool            deleteEntry(BPTreeKey key);
 
     bool            insertEntryAtIndex(BPTreeEntry entry, int index);
     bool            deleteEntryAtIndex(int index);

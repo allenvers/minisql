@@ -8,7 +8,7 @@
 
 #include "BPTree.hpp"
 
-void    BPTree::updateParent(BPTreeNode node) {
+void BPTree::updateParent(BPTreeNode node) {
     if (node.nodeType == BPTreeNodeType::BPTreeInternalNode) {
         for (int i = 0; i < node.entryNumber; i++) {
             BPTreeNode tempNode;
@@ -209,6 +209,208 @@ bool BPTree::updateEntryIntoNode(BPTreeEntry entry, BPTreeNode node) {
             node.writeNode();
             return true;
         }
+    }
+    assert(false);
+    return false;
+}
+
+bool BPTree::deleteKey(BPTreeKey key) {
+    return deleteKeyInNode(key, getNodeAtPage(ROOTPAGE));
+}
+
+bool BPTree::deleteKeyInNode(BPTreeKey key, BPTreeNode node) {
+    assert(key.keyLen == node.keyDataLength);
+    assert(key.type == node.keyType);
+    if (node.nodeType == BPTreeNodeType::BPTreeInternalNode) {
+        if (key < node.nodeEntries[1].key) {
+            return deleteKeyInNode(key, getNodeAtPage(node.nodeEntries[0].pagePointer));
+        } else {
+            for (int i = node.entryNumber - 1; i > 0; --i) {
+                if (key >= node.nodeEntries[i].key) {
+                    return deleteKeyInNode(key, getNodeAtPage(node.nodeEntries[i].pagePointer));
+                }
+            }
+        }
+    } else if (node.nodeType == BPTreeNodeType::BPTreeLeafNode) {
+        node.deleteEntry(key);
+        node.writeNode();
+        if (!node.isUnderflow()) {
+            return true;
+        } else {
+            if (isRoot(node)) {
+                return true; // Root node underflow do nothing
+            } else {
+                return handelUnderflowInChildNodeOfNodePage(getNodeAtPage(node.parentNodePagePointer), node.nodePage.pageIndex);
+            }
+        }
+    }
+    
+    assert(false);
+    return false;
+}
+
+bool BPTree::handelUnderflowInChildNodeOfNodePage(BPTreeNode node, PageIndexType childPage) {
+    assert(!node.isEmpty());
+    assert(node.entryNumber >= 2);
+    PageIndexType siblingPage;
+    if (childPage == node.nodeEntries[node.entryNumber - 1].pagePointer) {
+        siblingPage = childPage;
+        childPage = node.nodeEntries[node.entryNumber - 2].pagePointer;
+    } else {
+        siblingPage = getNodeAtPage(childPage).siblingNodePagePointer;
+    }
+    
+    int childIndex = 0, siblingIndex = 0;
+    for (int i = 0; i < node.entryNumber; ++i) {
+        if (node.nodeEntries[i].pagePointer == childPage) childIndex = i;
+        if (node.nodeEntries[i].pagePointer == siblingPage) siblingIndex = i;
+    }
+    
+    BPTreeNode childNode = getNodeAtPage(childPage);
+    BPTreeNode siblingNode = getNodeAtPage(siblingPage);
+    
+    if (childNode.nodeType == BPTreeNodeType::BPTreeInternalNode) {
+        siblingNode.nodeEntries[0].key = getMinKey(getNodeAtPage(siblingNode.nodeEntries[0].pagePointer));
+        
+        int biggerLenghth = childNode.nodeEntries[0].getEntryDataLength() * int(ceil((double)(childNode.entryNumber + siblingNode.entryNumber) / 2.0)) + sizeof(BPTreeNodeHeader);
+        if (biggerLenghth < (PAGESIZE / 2)) { // 此时可以merge
+            childNode.siblingNodePagePointer = siblingNode.siblingNodePagePointer;
+            for (int i = childNode.entryNumber; i < childNode.entryNumber + siblingNode.entryNumber; ++i) {
+                childNode.nodeEntries[i] = siblingNode.nodeEntries[i - childNode.entryNumber];
+            }
+            childNode.entryNumber += siblingNode.entryNumber; //merge 进childnode
+            
+            for (int i = siblingIndex; i < node.entryNumber; ++i)
+                node.nodeEntries[i] = node.nodeEntries[i + 1];
+            node.entryNumber--;
+            node.writeNode();
+            
+            updateParent(childNode);
+            childNode.writeNode();
+            deleteNode(siblingNode);
+            
+            if (node.isUnderflow()) {
+                if (isRoot(node)) {
+                    if (node.entryNumber == 1) {
+                        BPTreeNode tempNode = getNodeAtPage(node.nodeEntries[0].pagePointer);
+                        Page tempPage = node.nodePage;
+                        node = tempNode;
+                        node.nodePage = tempPage;
+                        updateParent(node);
+                        node.writeNode();
+                        deleteNode(tempNode);
+                        return true;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return handelUnderflowInChildNodeOfNodePage(getNodeAtPage(node.parentNodePagePointer), node.nodePage.pageIndex);
+                }
+            } else {
+                return true;
+            }
+        } else { // 此时需要 redistribute
+            int tot = (childNode.entryNumber + siblingNode.entryNumber);
+            int mid = tot / 2;
+            BPTreeEntry *entries = new BPTreeEntry[tot];
+            for (int i = 0; i < childNode.entryNumber; ++i)
+                entries[i] = childNode.nodeEntries[i];
+            for (int i = 0; i < siblingNode.entryNumber; ++i)
+                entries[i + childNode.entryNumber] = siblingNode.nodeEntries[i];
+            
+            childNode.entryNumber = mid;
+            siblingNode.entryNumber = tot - mid;
+            
+            for (int i = 0; i < childNode.entryNumber; ++i)
+                childNode.nodeEntries[i] = entries[i];
+            for (int i = 0; i < siblingNode.entryNumber; ++i)
+                siblingNode.nodeEntries[i] = entries[i + childNode.entryNumber];
+            
+            updateParent(childNode);
+            updateParent(siblingNode);
+            
+            childNode.writeNode();
+            siblingNode.writeNode();
+            
+            node.nodeEntries[childIndex].key = getMinKey(childNode);
+            node.nodeEntries[siblingIndex].key = getMinKey(siblingNode);
+            node.writeNode();
+            
+            delete[] entries;
+            return true;
+        }
+    } else {
+        int biggerLenghth = childNode.nodeEntries[0].getEntryDataLength() * int(ceil((double)(childNode.entryNumber + siblingNode.entryNumber) / 2.0)) + sizeof(BPTreeNodeHeader);
+        if (biggerLenghth < (PAGESIZE / 2)) { // 此时可以merge
+            childNode.siblingNodePagePointer = siblingNode.siblingNodePagePointer;
+            for (int i = childNode.entryNumber; i < childNode.entryNumber + siblingNode.entryNumber - 1; ++i) {
+                childNode.nodeEntries[i] = siblingNode.nodeEntries[i - childNode.entryNumber + 1];
+            }
+            childNode.entryNumber += siblingNode.entryNumber - 1; //merge 进childnode
+            
+            for (int i = siblingIndex; i < node.entryNumber; ++i)
+                node.nodeEntries[i] = node.nodeEntries[i + 1];
+            node.entryNumber--;
+            node.writeNode();
+            
+            updateParent(childNode);
+            childNode.writeNode();
+            deleteNode(siblingNode);
+            
+            if (node.isUnderflow()) {
+                if (isRoot(node)) {
+                    if (node.entryNumber == 1) {
+                        BPTreeNode tempNode = getNodeAtPage(node.nodeEntries[0].pagePointer);
+                        Page tempPage = node.nodePage;
+                        node = tempNode;
+                        node.nodePage = tempPage;
+                        updateParent(node);
+                        node.writeNode();
+                        deleteNode(tempNode);
+                        return true;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return handelUnderflowInChildNodeOfNodePage(getNodeAtPage(node.parentNodePagePointer), node.nodePage.pageIndex);
+                }
+            } else {
+                return true;
+            }
+        } else { // 此时需要 redistribute
+            int tot = (childNode.entryNumber + siblingNode.entryNumber - 2);
+            int mid = tot / 2;
+            BPTreeEntry *entries = new BPTreeEntry[tot];
+            for (int i = 1; i < childNode.entryNumber; ++i)
+                entries[i - 1] = childNode.nodeEntries[i];
+            for (int i = 1; i < siblingNode.entryNumber; ++i)
+                entries[i + childNode.entryNumber - 2] = siblingNode.nodeEntries[i];
+            
+            childNode.entryNumber = mid;
+            siblingNode.entryNumber = tot - mid;
+            
+            childNode.entryNumber++;
+            siblingNode.entryNumber++;
+            
+            for (int i = 1; i < childNode.entryNumber; ++i)
+                childNode.nodeEntries[i] = entries[i - 1];
+            for (int i = 1; i < siblingNode.entryNumber; ++i)
+                siblingNode.nodeEntries[i] = entries[i + childNode.entryNumber - 2];
+            
+            updateParent(childNode);
+            updateParent(siblingNode);
+            
+            childNode.writeNode();
+            siblingNode.writeNode();
+            
+            node.nodeEntries[childIndex].key = getMinKey(childNode);
+            node.nodeEntries[siblingIndex].key = getMinKey(siblingNode);
+            node.writeNode();
+            
+            delete[] entries;
+            return true;
+        }
+        
     }
     assert(false);
     return false;

@@ -76,7 +76,7 @@ bool BPTreeNode::isOverflow() {
 }
 
 bool BPTreeNode::isUnderflow() {
-    return getNodeRawDataLength() < (PAGESIZE - sizeof(BPTreeNodeHeader) / 2);
+    return getNodeRawDataLength() < (PAGESIZE / 2);
 }
 
 bool BPTreeNode::isLeaf() {
@@ -96,10 +96,12 @@ bool BPTreeNode::insertEntry(BPTreeEntry entry) {
     return insertEntryAtIndex(entry, insertPoint);
 }
 
-bool BPTreeNode::deleteEntry(BPTreeEntry entry) {
+bool BPTreeNode::deleteEntry(BPTreeKey key) {
+    assert(key.type == keyType);
     int deletePoint;
-    for (deletePoint = 0; deletePoint < entryNumber; ++deletePoint)
-        if (nodeEntries[deletePoint].key == entry.key) break;
+    for (deletePoint = 1; deletePoint < entryNumber; ++deletePoint) {
+        if (nodeEntries[deletePoint].key == key) break;
+    }
     if (deletePoint == entryNumber) return false;
     return deleteEntryAtIndex(deletePoint);
 }
