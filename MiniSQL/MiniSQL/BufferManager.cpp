@@ -18,6 +18,10 @@ const string BufferManager::indexFilesDirectory         = "./IndexFiles";
 const string BufferManager::recordCatalogFilesDirectory = "./RecordCatalogFiles";
 const string BufferManager::indexCatalogFilesDirectory  = "./IndexCatalogFiles";
 
+Page BufferManager::cachePages[CACHECAPACITY];
+bool BufferManager::pined[CACHECAPACITY];
+bool BufferManager::isDirty[CACHECAPACITY];
+int  BufferManager::lruCounter[CACHECAPACITY];
 
 bool BufferManager::openTableFile(string tableName) {
     string filePath = tableFilePath(tableName);
@@ -258,12 +262,65 @@ void BufferManager::checkPageFile(Page &page) {
 bool BufferManager::readPage(Page &page) {
     assert(page.pageType != PageType::UndefinedPage);
     assert(page.pageIndex != UNDEFINEED_PAGE_NUM);
+    int pageIndex = findPageInCachePages(page);
+    if (pageIndex == -1) {
+        forceReadPage(page); // May cause bug
+        pageIndex = getUnpinedBiggestCachePage();
+        if (pageIndex == -1) {
+            return true;
+        } else {
+            if (isDirty[pageIndex]) {
+                isDirty[pageIndex] = false;
+                forceWritePage(cachePages[pageIndex]);
+            }
+            cachePages[pageIndex] = page;
+            addCountersExceptCurrent(pageIndex);
+            return true;
+        }
+    } else {
+        page = cachePages[pageIndex];
+        return true;
+    }
+    assert(false);
+    return false;
+}
+
+bool BufferManager::forceReadPage(Page &page) {
+    assert(page.pageType != PageType::UndefinedPage);
+    assert(page.pageIndex != UNDEFINEED_PAGE_NUM);
     checkPageFile(page);
     lseek(page.fileHandle, page.pageIndex * PAGESIZE, SEEK_SET);
     return read(page.fileHandle, page.pageData, PAGESIZE) != -1;
 }
 
 bool BufferManager::writePage(Page &page) {
+    assert(page.pageType != PageType::UndefinedPage);
+    assert(page.pageIndex != UNDEFINEED_PAGE_NUM);
+    int pageIndex = findPageInCachePages(page);
+    if (pageIndex == -1) {
+        forceWritePage(page);// May cause bug
+        pageIndex = getUnpinedBiggestCachePage();
+        if (pageIndex == -1) {
+            return true;
+        } else {
+            if (isDirty[pageIndex]) {
+                isDirty[pageIndex] = false;
+                forceWritePage(cachePages[pageIndex]);
+            }
+            cachePages[pageIndex] = page;
+            addCountersExceptCurrent(pageIndex);
+            return true;
+        }
+    } else {
+        cachePages[pageIndex] = page;
+        isDirty[pageIndex] = true;
+        return true;
+    }
+    assert(false);
+    return false;
+}
+
+bool BufferManager::forceWritePage(Page &page) {
     assert(page.pageType != PageType::UndefinedPage);
     assert(page.pageIndex != UNDEFINEED_PAGE_NUM);
     checkPageFile(page);
@@ -328,4 +385,63 @@ void BufferManager::closeAllFiles() {
     
     for (auto itr: indexCalalogFileHandles)
         assert(close(itr.second) != -1);
+}
+
+void BufferManager::pinPage(Page &page) {
+    for (int i = 0; i < CACHECAPACITY; ++i) {
+        if (cachePages[i] == page) {
+            pined[i] = true;
+            break;
+        }
+    }
+}
+
+void BufferManager::unpinPage(Page &page) {
+    for (int i = 0; i < CACHECAPACITY; ++i) {
+        if (cachePages[i] == page) {
+            pined[i] = false;
+            break;
+        }
+    }
+}
+
+void BufferManager::addCountersExceptCurrent(int index) {
+    for (int i = 0; i < CACHECAPACITY; ++i) {
+        lruCounter[i]++;
+        if (lruCounter[i] > LRUCOUNTERMAX) lruCounter[i] = LRUCOUNTERMAX;
+    }
+    lruCounter[index] = 0;
+}
+
+int BufferManager::findPageInCachePages(Page &page) {
+    int retIndex = -1;
+    for (int i = 0; i < CACHECAPACITY; ++i)
+        if (cachePages[i] == page) {
+            retIndex = i;
+            break;
+        }
+    return retIndex;
+}
+
+int BufferManager::getUnpinedBiggestCachePage() {
+    int retIndex = -1;
+    int bigSaver = -1;
+    for (int i = 0; i < CACHECAPACITY; ++i) {
+        if ((!pined[i]) && (lruCounter[i] > bigSaver)) {
+            retIndex = i;
+            bigSaver = lruCounter[i];
+        }
+    }
+    return retIndex;
+}
+
+void BufferManager::writeBackAllCache() {
+    for (int i = 0; i < CACHECAPACITY; ++i) {
+        if (isDirty[i]) {
+            forceWritePage(cachePages[i]);
+            isDirty[i] = false;
+        }
+        pined[i] = false;
+        lruCounter[i] = 0;
+    }
 }

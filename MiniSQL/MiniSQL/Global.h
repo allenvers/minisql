@@ -20,5 +20,7 @@ const int NODESIZE = 1024;
 //const int PAGESIZE = 50 * sizeof(char);
 const PageIndexType ROOTPAGE = 1;
 const PageIndexType UNDEFINEED_PAGE_NUM = -1;
+const int CACHECAPACITY = 10;
+const int LRUCOUNTERMAX = 2000000000;
 
 #endif

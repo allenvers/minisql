@@ -46,6 +46,10 @@ public:
     ~Page() {
     }
     
+    bool operator==(const Page& page) {
+        return (this->attributeName == page.attributeName) && (this->tableName == page.tableName) && (this->pageType == page.pageType) && (this->pageIndex == page.pageIndex);
+    }
+    
     string          tableName;
     string          attributeName;
     PageType        pageType;

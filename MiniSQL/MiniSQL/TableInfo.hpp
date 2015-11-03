@@ -9,7 +9,7 @@
 #ifndef TableInfo_hpp
 #define TableInfo_hpp
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 using namespace std;
 

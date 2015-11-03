@@ -80,13 +80,22 @@ public:
     inline string indexCatalogFilePath(string tableName, string attributeName);
     
     bool readPage       (Page &page);
+    bool forceReadPage  (Page &page);
     bool writePage      (Page &page);
+    bool forceWritePage (Page &page);
     bool allocatePage   (Page &page);
     bool deallocatePage (Page &page);
     
     void checkPageFile  (Page &page);
     
     void closeAllFiles();
+    
+    void pinPage(Page &page);
+    void unpinPage(Page &page);
+    void addCountersExceptCurrent(int index);
+    int findPageInCachePages(Page &page);
+    int getUnpinedBiggestCachePage();
+    void writeBackAllCache();
     
     static map<string, PageIndexType> tableFileHandles;
     static map<pair<string, string>, PageIndexType> indexFileHandles;
@@ -97,6 +106,11 @@ public:
     static const string indexFilesDirectory;
     static const string recordCatalogFilesDirectory;
     static const string indexCatalogFilesDirectory;
+    
+    static Page cachePages[CACHECAPACITY];
+    static bool pined[CACHECAPACITY];
+    static bool isDirty[CACHECAPACITY];
+    static int lruCounter[CACHECAPACITY];
 };
 
 #endif /* BufferManager_hpp */

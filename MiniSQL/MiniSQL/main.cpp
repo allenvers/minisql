@@ -62,13 +62,15 @@ void printTree(BPTree &tree, BPTreeNode node, int deepth) {
 int saver[1000024];
 
 void testDelete() {
+    BufferManager bm;
+    bm.deleteIndexFile("test2", "test2");
     srand(time(0));
     BPTree tree("test2", "test2", BPTreeKeyType::INT, 4);
     BPTreeKey key;
     key.keyLen = 4;
     key.type = BPTreeKeyType::INT;
     map<int, bool> used;
-    for (int i = 0; i < 1000000; i++) {
+    for (int i = 0; i < 10000; i++) {
         while (used[key.intData])
             key.intData = rand() % 100000000;
         used[key.intData] = true;
@@ -78,10 +80,16 @@ void testDelete() {
     }
 //    printTree(tree, tree.getNodeAtPage(ROOTPAGE), 1);
     cout<<endl<<endl<<endl;
-    for (int i = 0; i < 1000000; i++) {
+    int temp = 10;
+    for (int i = 0; i < 10000; i++) {
         key.intData = saver[i];
     key.type = BPTreeKeyType::INT;
+        if ((rand() > 10000000) && temp) {
+            temp--;
+            cout << key.intData << endl;
+        } else {
         tree.deleteKey(key);
+        }
 //        cout << "deleting " << saver[i] << endl;
 //    printTree(tree, tree.getNodeAtPage(ROOTPAGE), 1);
 //        cout << endl << endl << endl;
@@ -165,6 +173,7 @@ void play3488() {
 }
 
 int main(int argc, const char * argv[]) {
+    BufferManager bm;
 //    freopen("output", "w", stdout);
 //    play3488();
 //    testKey();
@@ -211,6 +220,8 @@ int main(int argc, const char * argv[]) {
     printf("Second index is %s\n",indexPage.readIndexName(2).c_str());
     printf("Third index is %s\n",indexPage.readIndexName(3).c_str());*/
     
+    bm.writeBackAllCache();
+    bm.closeAllFiles();
     
     return 0;
 }
