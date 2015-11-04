@@ -47,6 +47,7 @@ public:
 	float 			floatdata;
 	char 			chardata[256];
 	char 			rawdata[256];
+    string          attrName;
 };
 
 #endif /* Attribute_hpp */

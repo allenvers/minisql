@@ -429,7 +429,8 @@ vector<Attribute> CatalogManager::tableInformation(string tableName)
     table.clear();
     for (i=0; i<num; i++)
     {
-        j=attrType(tableName, catalog.readAttrName(i));
+        attr.attrName=catalog.readAttrName(i);
+        j=attrType(tableName, attr.attrName);
         if (j==1)
         {
             attr.type = AttributeType::INT;
