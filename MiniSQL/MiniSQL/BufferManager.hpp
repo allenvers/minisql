@@ -30,7 +30,8 @@ public:
         DIR *tempOpenPointer;
         
         if ((tempOpenPointer = opendir(recordFilesDirectory.c_str())) == NULL) {
-            assert(mkdir(recordFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+//            assert(mkdir(recordFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+            mkdir(recordFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
         if (tempOpenPointer != NULL) {
             closedir(tempOpenPointer);
@@ -38,7 +39,8 @@ public:
         }
         
         if ((tempOpenPointer = opendir(indexFilesDirectory.c_str())) == NULL) {
-            assert(mkdir(indexFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+//            assert(mkdir(indexFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+            mkdir(indexFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
         if (tempOpenPointer != NULL) {
             closedir(tempOpenPointer);
@@ -46,7 +48,8 @@ public:
         }
         
         if ((tempOpenPointer = opendir(recordCatalogFilesDirectory.c_str())) == NULL) {
-            assert(mkdir(recordCatalogFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+//            assert(mkdir(recordCatalogFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+            mkdir(recordCatalogFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
         if (tempOpenPointer != NULL) {
             closedir(tempOpenPointer);
@@ -54,7 +57,8 @@ public:
         }
         
         if ((tempOpenPointer = opendir(indexCatalogFilesDirectory.c_str())) == NULL) {
-            assert(mkdir(indexCatalogFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+//            assert(mkdir(indexCatalogFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != -1);
+            mkdir(indexCatalogFilesDirectory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
         if (tempOpenPointer != NULL) {
             closedir(tempOpenPointer);

@@ -21,7 +21,7 @@ public:
     string attrValueStr;
     int attrValueInt;
     float attrValueFlo;
-    int attrType;
+    string attrType; //"INT"、"FLOAT"、"CHAR"
     string op; // "="、"<>"、"<"、">"、"<="、">="
 };
 
