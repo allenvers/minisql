@@ -10,7 +10,7 @@
 #define IndexCatalogPage_hpp
 
 #include "Page.hpp"
-#include <stdio.h>
+#include <cstdio>
 
 class IndexCatalogPage: public Page
 {

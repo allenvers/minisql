@@ -9,7 +9,7 @@
 #ifndef SQLcommand_hpp
 #define SQLcommand_hpp
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include "TableInfo.hpp"
 #include "ConditionContent.hpp"
@@ -37,9 +37,7 @@ public:
     int attrNum;
     ConditionContent condCont[50];
     string fileName;
-    string errorInfo;
-    
-    void parseComm(string);
+    void reset() {tableName=""; attrName=""; indexName=""; tableInfo.reset(); condNum=0; attrNum=0; fileName="";}
 };
 
 #endif /* SQLcommand_hpp */

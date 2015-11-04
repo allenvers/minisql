@@ -11,8 +11,10 @@
 #include "Page.hpp"
 #include "CatalogPage.hpp"
 #include "IndexCatalogPage.hpp"
+#include "Attribute.hpp"
 #include "TableInfo.hpp"
-#include <stdio.h>
+#include <vector>
+#include <cstdio>
 #include <string>
 using namespace std;
 
@@ -28,7 +30,19 @@ void CatalogManager::insertTable(TableInfo table)
         printf("Failed to insert table %s. Table already existed.\n",table.tableName.c_str());
         return;
     }
-    
+
+    if (table.primaryKey=="")
+        table.primaryKeyLoc=-1;
+    else
+    {
+        for (i=0; i<table.attrNum; i++)
+            if (table.attrName[i]==table.primaryKey)
+            {
+                table.primaryKeyLoc=i;
+                table.attrUnique[i]='Y';
+            }
+    }
+
     page.tableName = table.tableName;
     page.pageData[0] = (char)table.attrNum;
     page.pageData[1] = (char)table.primaryKeyLoc;
@@ -36,14 +50,18 @@ void CatalogManager::insertTable(TableInfo table)
     {
         page.writeAttr(i*100+2, table.attrName[i]);
         page.writeAttr(i*100+22, table.attrType[i]);
-        page.writeAttr(i*100+42, table.attrIndex[i]);
+//        page.writeAttr(i*100+42, table.attrIndex[i]);
         page.pageData[i*100+62] = table.attrUnique[i];
         *(int*)(page.pageData+(i*100+82)) = 0;      //该属性上的索引总数，初始为0
     }
     
     buffer.writePage(page);
-    printf("Inserted table %s successfully! Trying to build index on primary key automatelly...\n",table.tableName.c_str());
-    insertIndex(table.tableName, table.attrName[table.primaryKeyLoc], table.tableName+table.attrName[table.primaryKeyLoc]);
+    printf("Inserted table %s successfully!\n",table.tableName.c_str());
+    if (table.primaryKeyLoc>=0)
+    {
+        printf("Trying to build index on primary key automatelly...\n");
+        insertIndex(table.tableName, table.attrName[table.primaryKeyLoc], table.tableName+table.attrName[table.primaryKeyLoc]);
+    }
 }
 
 void CatalogManager::dropTable(string tableName)
@@ -57,7 +75,7 @@ void CatalogManager::dropTable(string tableName)
         BufferManager buffer;
         IndexCatalogPage indexPage;
         int n,nn,i,x,k;
-        string s;
+        string s, attrName;
         
         indexPage.pageIndex=1;
         buffer.readPage(indexPage);
@@ -75,7 +93,11 @@ void CatalogManager::dropTable(string tableName)
                 {
                     k++;                            //k用来记录删除了多少条索引
                     indexPage.deleteIndex(i);
-                    //此处应有个api接口，用来真正删除索引
+                    attrName=indexPage.readAttrName(i);
+                    BufferManager bm;
+                    string filePath=bm.indexFilePath(tableName, attrName);
+                    if (bm.indexFileIsExist(tableName, attrName))
+                        bm.deleteIndexFile(tableName, attrName);
                 }
             }
             else                                    //如果当前条已被删除，则最后一条位置后移
@@ -188,7 +210,10 @@ string CatalogManager::primaryKey(string tableName)
     
     page.tableName = tableName;
     buffer.readPage(page);
-    return page.readAttrName((int)page.pageData[1]);
+    if ((int)page.pageData[1]==-1)
+        return "";
+    else
+        return page.readAttrName((int)page.pageData[1]);
 }
 
 bool CatalogManager::indexExisted(string indexName)
@@ -239,32 +264,35 @@ string CatalogManager::indexLocation(string indexName)
     return "";
 }
 
-void CatalogManager::insertIndex(string tableName, string attrName, string indexName)
+bool CatalogManager::insertIndex(string tableName, string attrName, string indexName)
 {
     IndexCatalogPage indexPage;
     if (indexExisted(indexName))
     {
         printf("Failed to insert index %s. Index name already existed!\n", indexName.c_str());
+        return 0;
     }
     else
     if (!tableExisted(tableName))
     {
         printf("Failed to insert index %s. Table %s does not exist!\n", indexName.c_str(),tableName.c_str());
+        return 0;
     }
     else
     if (!attrExisted(tableName, attrName))
     {
         printf("Failed to insert index %s. Attribution %s on Table %s does not exist!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
+        return 0;
     }
     else
     if (!attrUnique(tableName, attrName))
     {
         printf("Failed to insert index %s. Attribution %s on Table %s is not unique!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
+        return 0;
     }
     else
     {
         indexPage.writeIndex(tableName, attrName, indexName);
-        
         BufferManager buffer;
         CatalogPage catalog;
         int num,i;
@@ -277,9 +305,9 @@ void CatalogManager::insertIndex(string tableName, string attrName, string index
                 catalog.modifyAttrIndexNum(i,1);
                 break;
             }
-        
-        //此处应该有个api接口，用来真正建索引
+       
         printf("Inserted index %s(Attribution %s on Table %s) successfully!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
+        return 1;
     }
 }
 
@@ -288,6 +316,7 @@ void CatalogManager::deleteIndex(string indexName)
     if (!indexExisted(indexName))                   //如果没有这个索引
     {
         printf("Failed to delete index %s. Index does not existed.\n", indexName.c_str());
+        return;
     }
     else                                            //有这个索引
     {
@@ -315,8 +344,12 @@ void CatalogManager::deleteIndex(string indexName)
             attrName=attrName+s[i];
             i++;
         }
-
-        //此处应该有个api接口，用来真正删除索引
+        
+        if (indexName == tableName+attrName && primaryKey(tableName) == attrName)
+        {
+            printf("Failed to delete index %s. Default index on primary key cannot be deleted.\n",indexName.c_str());
+            return;
+        }
         
         indexPage.pageIndex=1;
         buffer.readPage(indexPage);
@@ -346,9 +379,17 @@ void CatalogManager::deleteIndex(string indexName)
             if (catalog.readAttrName(i) == attrName)
             {
                 catalog.modifyAttrIndexNum(i,-1);
+                if (catalog.readAttrIndexNum(i)==0)
+                {
+                    BufferManager bm;
+                    string filePath=bm.indexFilePath(tableName, attrName);
+                    if (bm.indexFileIsExist(tableName, attrName))
+                        bm.deleteIndexFile(tableName, attrName);
+                }
+
                 break;
             }
-        
+
         printf("Deleted index %s successfully!\n",indexName.c_str());
     }
 }
@@ -370,4 +411,44 @@ int CatalogManager::indexNum(string tableName, string attrName)
         }
 
     return x;
+}
+
+vector<Attribute> CatalogManager::tableInformation(string tableName)
+{
+    int i,j,num;
+    string s;
+    vector<Attribute> table;
+    Attribute attr;
+    CatalogPage catalog;
+    BufferManager buffer;
+    
+    catalog.pageIndex=1;
+    catalog.tableName=tableName;
+    buffer.readPage(catalog);
+    num=(int)catalog.pageData[0];
+    table.clear();
+    for (i=0; i<num; i++)
+    {
+        j=attrType(tableName, catalog.readAttrName(i));
+        if (j==1)
+        {
+            attr.type = AttributeType::INT;
+            attr.length = sizeof(int);
+        }
+        else
+        if (j==2)
+        {
+            attr.type = AttributeType::FLOAT;
+            attr.length = sizeof(float);
+        }
+        else
+        {
+            attr.type = AttributeType::CHAR;
+            attr.length = j-2;
+        }
+        
+        table.push_back(attr);
+    }
+    
+    return table;
 }

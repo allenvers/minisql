@@ -9,7 +9,7 @@
 #ifndef CatalogPage_hpp
 #define CatalogPage_hpp
 
-#include <stdio.h>
+#include <cstdio>
 #include "Page.hpp"
 
 class CatalogPage: public Page

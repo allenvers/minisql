@@ -113,7 +113,6 @@ int IndexCatalogPage::writeIndex(string tableName, string attrName, string index
     m = *(int*)(pageData+4);
     if (m==-1)                  //没有删除的条目，即目前为满排列，直接插到最后
     {
-        printf("~~~ %d\n",n);
         target=n;
         i=(n-1)/recordLimit+2;  //i为页数
         j=(n-1)%recordLimit+1;  //j为行数
@@ -131,7 +130,6 @@ int IndexCatalogPage::writeIndex(string tableName, string attrName, string index
     buffer.writePage(*this);    //改首页信息，包括：总数增加了1，以及如果占用了已删除位置，还需要更改这项信息
     pageIndex=i;                //强行改成第i页并读第i页数据
     buffer.readPage(*this);
-    printf("@@@ %d %d\n",i,j);
     writeCont((j-1)*400, tableName);
     writeCont((j-1)*400+100, attrName);
     writeCont((j-1)*400+200, indexName);

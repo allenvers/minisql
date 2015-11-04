@@ -9,12 +9,14 @@
 #ifndef ConditionContent_hpp
 #define ConditionContent_hpp
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 using namespace std;
 
+//这个class，不仅用于where后的条件，也用于insert的values（懒）
 class ConditionContent
 {
+public:
     string attrName;
     string attrValueStr;
     int attrValueInt;
