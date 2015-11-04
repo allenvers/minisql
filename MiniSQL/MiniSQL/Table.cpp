@@ -34,7 +34,7 @@ Table::~Table()
 	bm.writePage(page);
 }
 
-void Table::insertTuple(vector<Attribute> list)
+PageIndexType Table::insertTuple(vector<Attribute> list)
 {
 	Tuple tuple;
     tuple.list = list;
@@ -54,6 +54,8 @@ void Table::insertTuple(vector<Attribute> list)
 	head = tuple.page.pageIndex;
 	tuple.convertToRawData();
 	bm.writePage(tuple.page);
+
+	return page.pageIndex;
 }
 
 void Table::deleteTuple(PageIndexType index)

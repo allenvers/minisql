@@ -25,7 +25,7 @@ public:
 	Table(string);
 	~Table();
 
-	void insertTuple(vector<Attribute>);						//参数：插入的Tuple的Attribute组成的vector
+	PageIndexType insertTuple(vector<Attribute>);				//参数：插入的Tuple的Attribute组成的vector 返回：插入page的PageIndex
 	void deleteTuple(PageIndexType);							//参数：所删除的Page的页号
 
 	vector<PageIndexType> scanEqual(int , Attribute);			//参数：第几个属性，所需比较的参数组成的Attribute
