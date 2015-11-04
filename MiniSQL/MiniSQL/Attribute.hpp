@@ -37,6 +37,7 @@ public:
 
 	bool operator <  (const Attribute &attr);
 	bool operator == (const Attribute &attr);
+	bool operator != (const Attribute &attr);
 	bool operator >  (const Attribute &attr);
 	bool operator <= (const Attribute &attr);
 	bool operator >= (const Attribute &attr);

@@ -14,6 +14,9 @@
 #include "TableInfo.cpp"
 #include "BPTree.hpp"
 #include "Table.hpp"
+#include "y.tab.h"
+extern int yyparse();
+
 
 using namespace std;
 
@@ -166,6 +169,7 @@ using namespace std;
 //}
 
 int main(int argc, const char * argv[]) {
+    /*
 //    freopen("output", "w", stdout);
 //    play3488();
 //    testKey();
@@ -245,6 +249,12 @@ int main(int argc, const char * argv[]) {
 //    printf("First index is %s\n",indexPage.readIndexName(1).c_str());
 //    printf("Second index is %s\n",indexPage.readIndexName(2).c_str());
 //    printf("Third index is %s\n",indexPage.readIndexName(3).c_str());
+*/
+    
+    cout << ">>> ";
+    while (1) {
+        yyparse();
+    }
 
 
     return 0;

@@ -139,6 +139,10 @@ bool Attribute::operator == (const Attribute &attr){
 	return compare(attr) ==0;
 }
 
+bool Attribute::operator != (const Attribute &attr){
+	return compare(attr) != 0;
+}
+
 bool Attribute::operator >  (const Attribute &attr){
 	return compare(attr) > 0;
 }

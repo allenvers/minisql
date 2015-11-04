@@ -16,6 +16,7 @@ bool API::insertRecord(SQLcommand sql)
 {
 //        printf("%d\n",sql.attrNum);
 //        printf("%f\n",sql.condCont[2].attrValueFlo);
+    time_t before = time(0);
     printf("----API::insertRecord----\n");
     /* sql使用方法：
         sql.tableName为用户想要插入的表名
@@ -83,9 +84,11 @@ bool API::createTable(TableInfo tableInfo)
 //    printf("---%d\n",tableInfo.attrNum);
 //    printf("===%s\n",tableInfo.attrType[2].c_str());
 //    printf("~~~%s\n",tableInfo.primaryKey.c_str());
+    clock_t begin = clock();
     printf("----API::createTable----\n");
     CatalogManager catalog;
     catalog.insertTable(tableInfo);
+    printf("Command running time: %f second\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
     return 1;
 }
 

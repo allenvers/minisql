@@ -55,7 +55,7 @@ PageIndexType Table::insertTuple(vector<Attribute> list)
 	tuple.convertToRawData();
 	bm.writePage(tuple.page);
 
-	return page.pageIndex;
+	return tuple.page.pageIndex;
 }
 
 void Table::deleteTuple(PageIndexType index)
@@ -116,6 +116,32 @@ vector<PageIndexType> Table::scanEqual(int attrnum, Attribute attribute)
 		tuple.ParseFromRawData();
 
 		if(tuple.list[attrnum] == attribute)
+			result.push_back(i);
+
+		i = page.readnext();
+	}
+
+	return result;
+}
+
+vector<PageIndexType> Table::scanNotEqual(int attrnum, Attribute attribute)
+{
+	vector<PageIndexType> result;
+	PageIndexType i = head;
+
+	while (i != UNDEFINEED_PAGE_NUM)
+	{
+		RecordPage page;
+		page.tableName = TableName;
+		page.pageIndex = i;
+		bm.readPage(page);
+
+		Tuple tuple;
+		tuple.page = page;
+		tuple.createlist(TableName);
+		tuple.ParseFromRawData();
+
+		if (tuple.list[attrnum] != attribute)
 			result.push_back(i);
 
 		i = page.readnext();
@@ -215,6 +241,24 @@ vector<PageIndexType> Table::scanGreaterEqual(int attrnum, Attribute attribute)
 		if(tuple.list[attrnum] >= attribute)
 			result.push_back(i);
 
+		i = page.readnext();
+	}
+
+	return result;
+}
+
+vector<PageIndexType> Table::getAll()
+{
+	vector<PageIndexType> result;
+	PageIndexType i = head;
+	while (i != UNDEFINEED_PAGE_NUM)
+	{
+		result.push_back(i);
+
+		RecordPage page;
+		page.tableName = TableName;
+		page.pageIndex = i;
+		bm.readPage(page);		
 		i = page.readnext();
 	}
 
