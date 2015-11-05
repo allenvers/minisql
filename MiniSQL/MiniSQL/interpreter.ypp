@@ -112,6 +112,12 @@ line	: create_table ';'	{
 }
 
 | line QUIT ';'	{
+    printf("Closing files and writing back buffer...\n");
+    BufferManager bm;
+    bm.writeBackAllCache();
+    bm.closeAllFiles();
+    printf("Operation finished.\n");
+    
     printf("Thanks for using~\n");
     exit(EXIT_SUCCESS);
 }

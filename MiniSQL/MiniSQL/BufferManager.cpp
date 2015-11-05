@@ -272,6 +272,7 @@ void BufferManager::checkPageFile(Page &page) {
 }
 
 bool BufferManager::readPage(Page &page) {
+//    return forceReadPage(page);
     assert(page.pageType != PageType::UndefinedPage);
     assert(page.pageIndex != UNDEFINEED_PAGE_NUM);
     int pageIndex = findPageInCachePages(page);
@@ -306,6 +307,7 @@ bool BufferManager::forceReadPage(Page &page) {
 }
 
 bool BufferManager::writePage(Page &page) {
+//    return forceWritePage(page);
     assert(page.pageType != PageType::UndefinedPage);
     assert(page.pageIndex != UNDEFINEED_PAGE_NUM);
     int pageIndex = findPageInCachePages(page);

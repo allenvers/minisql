@@ -7,16 +7,12 @@
 //
 
 #include "API.hpp"
-#include "CatalogManager.hpp"
-#include "Attribute.hpp"
-#include <vector>
-#include <cstdio>
 
 bool API::insertRecord(SQLcommand sql)
 {
 //        printf("%d\n",sql.attrNum);
 //        printf("%f\n",sql.condCont[2].attrValueFlo);
-    time_t before = time(0);
+    clock_t begin = clock();
     printf("----API::insertRecord----\n");
     /* sql使用方法：
         sql.tableName为用户想要插入的表名
@@ -27,6 +23,9 @@ bool API::insertRecord(SQLcommand sql)
             condCont[i].attrValueFlo / condCont[i].attrValueInt / condCond[i].attrValueStr
     */
     CatalogManager catalog;
+    if (!catalog.tableExisted(sql.tableName)) {
+        printf("Table %s doesn't exist! Insertion failed!\n", sql.tableName.c_str());
+    }
     vector<Attribute> vec=catalog.tableInformation(sql.tableName);
     int i;
     if (vec.size()!=sql.attrNum)
@@ -50,6 +49,8 @@ bool API::insertRecord(SQLcommand sql)
                 printf("Failed to insert record. Value is too long.\n");
                 return 0;
             }
+            memset(vec[i - 1].chardata, 0, vec[i - 1].length);
+            memcpy(vec[i - 1].chardata, sql.condCont[i].attrValueStr.c_str(), sql.condCont[i].attrValueStr.length());
         }
         else
         if (vec[i-1].type==AttributeType::FLOAT)
@@ -59,6 +60,11 @@ bool API::insertRecord(SQLcommand sql)
                 printf("Failed to insert record. Wrong type of value.\n");
                 return 0;
             }
+            if (sql.condCont[i].attrType == "INT") {
+                vec[i - 1].floatdata = (float) sql.condCont[i].attrValueInt;
+            } else {
+                vec[i - 1].floatdata = sql.condCont[i].attrValueFlo;
+            }
         }
         else
         {
@@ -67,6 +73,7 @@ bool API::insertRecord(SQLcommand sql)
                 printf("Failed to insert record. Wrong type of value.\n");
                 return 0;
             }
+            vec[i - 1].intdata = sql.condCont[i].attrValueInt;
         }
     }
     
@@ -75,6 +82,12 @@ bool API::insertRecord(SQLcommand sql)
     //判一个属性是否unique可以调用catalogManager的函数
     //bool attrUnique(string, string);  参数：表名、列名
     //vec[i].attrName可以读列名
+    
+    Table table(sql.tableName);
+    table.insertTuple(vec);
+    
+    
+    printf("Command running time: %f second\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
     return 1;
 }
 
@@ -131,6 +144,16 @@ bool API::selectRecord(SQLcommand sql)
     
     printf("----API::selectRecord----\n");
     //飞哥加油么么哒~
+    CatalogManager cm;
+    for (auto itr: cm.tableInformation(sql.tableName)) {
+        printf("%s\t", itr.attrName.c_str());
+    }
+    cout << endl;
+    
+    Table table(sql.tableName);
+    for (auto itr: table.getAll()) {
+        table.printinfo(itr);
+    }
     return 1;
 }
 
