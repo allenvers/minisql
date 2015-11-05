@@ -350,5 +350,5 @@ void yyerror(const char *s)
     if (strcmp(s,"Char is defined too long or too short!"))
         printf("%s near '%s'\n",s,tmp2.c_str());
     else
-        printf("yyt=%s",yytext);
+        printf("%s\n",s);
 }

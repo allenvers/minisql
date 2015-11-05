@@ -22,15 +22,23 @@ void CatalogManager::insertTable(TableInfo table)
 {
     CatalogPage page;
     BufferManager buffer;
-    int i;
+    int i,j;
     string s;
     
     if (tableExisted(table.tableName))
     {
-        printf("Failed to insert table %s. Table already existed.\n",table.tableName.c_str());
+        printf("Failed to create table %s. Table already existed.\n",table.tableName.c_str());
         return;
     }
 
+    for (i=0; i<table.attrNum-1; i++)
+        for (j=i+1; j<table.attrNum; j++)
+            if (table.attrName[i]==table.attrName[j])
+            {
+                printf("Failed to create table %s. Attributes with the same name have been found.\n",table.tableName.c_str());
+                return;
+            }
+    
     if (table.primaryKey=="")
         table.primaryKeyLoc=-1;
     else
@@ -56,7 +64,7 @@ void CatalogManager::insertTable(TableInfo table)
     }
     
     buffer.writePage(page);
-    printf("Inserted table %s successfully!\n",table.tableName.c_str());
+    printf("Created table %s successfully!\n",table.tableName.c_str());
     if (table.primaryKeyLoc>=0)
     {
         printf("Trying to build index on primary key automatelly...\n");
@@ -130,7 +138,7 @@ bool CatalogManager::attrExisted(string tableName, string attrName)
 {
     if (!tableExisted(tableName))
     {
-        printf("Failed to find Attribution %s on Table %s. Table %s does not existed.", attrName.c_str(),tableName.c_str(),tableName.c_str());
+        printf("Failed to find Attribute %s on Table %s. Table %s does not existed.", attrName.c_str(),tableName.c_str(),tableName.c_str());
         
         return 0;
     }
@@ -282,13 +290,13 @@ bool CatalogManager::insertIndex(string tableName, string attrName, string index
     else
     if (!attrExisted(tableName, attrName))
     {
-        printf("Failed to insert index %s. Attribution %s on Table %s does not exist!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
+        printf("Failed to insert index %s. Attribute %s on Table %s does not exist!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
         return 0;
     }
     else
     if (!attrUnique(tableName, attrName))
     {
-        printf("Failed to insert index %s. Attribution %s on Table %s is not unique!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
+        printf("Failed to insert index %s. Attribute %s on Table %s is not unique!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
         return 0;
     }
     else
@@ -307,7 +315,7 @@ bool CatalogManager::insertIndex(string tableName, string attrName, string index
                 break;
             }
        
-        printf("Inserted index %s(Attribution %s on Table %s) successfully!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
+        printf("Inserted index %s(Attribute %s on Table %s) successfully!\n", indexName.c_str(), attrName.c_str(),tableName.c_str());
         return 1;
     }
 }
