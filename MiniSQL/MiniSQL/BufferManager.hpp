@@ -117,6 +117,8 @@ public:
     int getUnpinedBiggestCachePage();
     void writeBackAllCache();
     
+    void clearCache();
+    
     static map<string, PageIndexType> tableFileHandles;
     static map<pair<string, string>, PageIndexType> indexFileHandles;
     static map<string, PageIndexType> tableCatalogFileHandles;

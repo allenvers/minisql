@@ -162,24 +162,32 @@ bool BufferManager::indexCatalogFileIsExist(string tableName, string attributeNa
 }
 
 bool BufferManager::deleteTableFile(string tableName) {
+    writeBackAllCache();
+    clearCache();
     auto filePath = tableFilePath(tableName);
     tableFileHandles.erase(tableName);
     return remove(filePath.c_str()) != -1;
 }
 
 bool BufferManager::deleteIndexFile(string tableName, string attributeName) {
+    writeBackAllCache();
+    clearCache();
     auto filePath = indexFilePath(tableName, attributeName);
     indexFileHandles.erase(make_pair(tableName, attributeName));
     return remove(filePath.c_str()) != -1;
 }
 
 bool BufferManager::deleteTableCatalogFile(string tableName) {
+    writeBackAllCache();
+    clearCache();
     auto filePath = tableCatalogFilePath(tableName);
     tableCatalogFileHandles.erase(tableName);
     return remove(filePath.c_str()) != -1;
 }
 
 bool BufferManager::deleteIndexCatalogFile(string tableName, string attributeName) {
+    writeBackAllCache();
+    clearCache();
     auto filePath = indexCatalogFilePath(tableName, attributeName);
     indexCalalogFileHandles.erase(make_pair(tableName, attributeName));
     return remove(filePath.c_str()) != -1;
@@ -446,6 +454,14 @@ void BufferManager::writeBackAllCache() {
             isDirty[i] = false;
         }
         pined[i] = false;
+        lruCounter[i] = 0;
+    }
+}
+void BufferManager::clearCache() {
+    for (int i = 0; i < CACHECAPACITY; ++i) {
+        cachePages[i].pageType = PageType::UndefinedPage;
+        pined[i] = false;
+        isDirty[i] = false;
         lruCounter[i] = 0;
     }
 }
