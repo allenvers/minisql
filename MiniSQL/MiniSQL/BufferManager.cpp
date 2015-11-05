@@ -163,21 +163,25 @@ bool BufferManager::indexCatalogFileIsExist(string tableName, string attributeNa
 
 bool BufferManager::deleteTableFile(string tableName) {
     auto filePath = tableFilePath(tableName);
+    tableFileHandles.erase(tableName);
     return remove(filePath.c_str()) != -1;
 }
 
 bool BufferManager::deleteIndexFile(string tableName, string attributeName) {
     auto filePath = indexFilePath(tableName, attributeName);
+    indexFileHandles.erase(make_pair(tableName, attributeName));
     return remove(filePath.c_str()) != -1;
 }
 
 bool BufferManager::deleteTableCatalogFile(string tableName) {
     auto filePath = tableCatalogFilePath(tableName);
+    tableCatalogFileHandles.erase(tableName);
     return remove(filePath.c_str()) != -1;
 }
 
 bool BufferManager::deleteIndexCatalogFile(string tableName, string attributeName) {
     auto filePath = indexCatalogFilePath(tableName, attributeName);
+    indexCalalogFileHandles.erase(make_pair(tableName, attributeName));
     return remove(filePath.c_str()) != -1;
 }
 

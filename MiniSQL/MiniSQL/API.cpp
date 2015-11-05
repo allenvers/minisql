@@ -106,7 +106,7 @@ bool API::createIndex(SQLcommand sql)
 //    printf("---%s %s %s\n",sql.indexName.c_str(), sql.tableName.c_str(), sql.attrName.c_str());
     printf("----API::createIndex----\n");
     CatalogManager catalog;
-    if (catalog.insertIndex(sql.indexName, sql.tableName, sql.indexName))
+    if (catalog.insertIndex(sql.tableName, sql.attrName, sql.indexName))
     {
         //catalog创建成功，调用indexManager的接口真正建索引
     }

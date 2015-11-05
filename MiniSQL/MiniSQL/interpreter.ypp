@@ -10,6 +10,7 @@
     #include "ConditionContent.hpp"
     #include "CatalogManager.hpp"
     #include "API.hpp"
+    #include "BufferManager.hpp"
     
     std::string tmpAttrName;
     int fileflag=0;
@@ -100,6 +101,12 @@ line	: create_table ';'	{
     }
 }
 | QUIT ';'	{
+    printf("Closing files and writing back buffer...\n");
+    BufferManager bm;
+    bm.writeBackAllCache();
+    bm.closeAllFiles();
+    printf("Operation finished.\n");
+    
     printf("Thank you~\n");
     exit(EXIT_SUCCESS);
 }
