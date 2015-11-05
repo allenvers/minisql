@@ -23,6 +23,8 @@ Attribute::Attribute(const Attribute &attr) {
     memcpy(chardata, attr.chardata, length);
     memcpy(rawdata, attr.rawdata, 256);
     type = attr.type;
+    attrName = attr.attrName;
+
 }
 
 Attribute::~Attribute() {
