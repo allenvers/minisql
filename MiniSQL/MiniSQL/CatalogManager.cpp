@@ -111,6 +111,7 @@ void CatalogManager::dropTable(string tableName)
         *(int*)indexPage.pageData=nn-k;
         buffer.writePage(indexPage);
         buffer.deleteTableCatalogFile(tableName);   //删除当前表的文件
+        buffer.deleteTableFile(tableName);          //删除当前表的record文件
         printf("Dropped table %s successfully!\n",tableName.c_str());
     }
 }

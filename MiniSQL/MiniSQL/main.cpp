@@ -183,8 +183,7 @@ int main(int argc, const char * argv[]) {
     buffer.deleteTableFile("student");
 
 
-//    IndexCatalogPage indexPage;
-//    indexPage.writeInitialPage();   //这行只在第一次运行的时候要用，用于初始化存放index的文件
+
 
 
 //    Page page;
@@ -250,7 +249,16 @@ int main(int argc, const char * argv[]) {
 //    printf("Second index is %s\n",indexPage.readIndexName(2).c_str());
 //    printf("Third index is %s\n",indexPage.readIndexName(3).c_str());
 */
-    
+
+
+    BufferManager bm;
+
+    if (!bm.indexCatalogFileIsExist("",""))
+    {
+        IndexCatalogPage indexPage;
+        indexPage.writeInitialPage();   //这行只在第一次运行的时候要用，用于初始化存放index的文件
+    }
+
     cout << ">>> ";
     while (1) {
         yyparse();
