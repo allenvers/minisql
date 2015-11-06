@@ -304,11 +304,13 @@ bool CatalogManager::insertIndex(string tableName, string attrName, string index
         int num,i;
         
         catalog.tableName = tableName;
+        buffer.readPage(catalog);
         num = (int)catalog.pageData[0];
         for (i=0; i<num; i++)
             if (catalog.readAttrName(i) == attrName)
             {
                 catalog.modifyAttrIndexNum(i,1);
+                buffer.writePage(catalog);
                 break;
             }
        
