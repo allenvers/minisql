@@ -276,6 +276,26 @@ bool API::selectRecord(SQLcommand sql)
         vector<PageIndexType> result = table.getAll();
         
         for (int i = 0; i < conditionList.size(); ++i) {
+            if ((relationList[i] == "=") && (cm.indexNum(sql.tableName, conditionList[i].attrName) > 0)) {
+                BPTree *indexTree;
+                if (conditionList[i].type == AttributeType::INT) {
+                    indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::INT, conditionList[i].length);
+                } else if (conditionList[i].type == AttributeType::FLOAT) {
+                    indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::FLOAT, conditionList[i].length);
+                } else {
+                    indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::CHAR, conditionList[i].length);
+                }
+                auto searchResult = indexTree->searchKeyForPagePointer(conditionList[i]);
+                if (searchResult != UNDEFINEED_PAGE_NUM) {
+                    result.clear();
+                    result.push_back(searchResult);
+                    break;
+                }
+                delete indexTree;
+            }
+        }
+        
+        for (int i = 0; i < conditionList.size(); ++i) {
             vector<PageIndexType> nextResult;
             nextResult.clear();
             
@@ -401,6 +421,26 @@ bool API::deleteRecord(SQLcommand sql)
     vector<PageIndexType> result = table.getAll();
     
     if (sql.condNum != 0) {
+        for (int i = 0; i < conditionList.size(); ++i) {
+            if ((relationList[i] == "=") && (cm.indexNum(sql.tableName, conditionList[i].attrName) > 0)) {
+                BPTree *indexTree;
+                if (conditionList[i].type == AttributeType::INT) {
+                    indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::INT, conditionList[i].length);
+                } else if (conditionList[i].type == AttributeType::FLOAT) {
+                    indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::FLOAT, conditionList[i].length);
+                } else {
+                    indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::CHAR, conditionList[i].length);
+                }
+                auto searchResult = indexTree->searchKeyForPagePointer(conditionList[i]);
+                if (searchResult != UNDEFINEED_PAGE_NUM) {
+                    result.clear();
+                    result.push_back(searchResult);
+                    break;
+                }
+                delete indexTree;
+            }
+        }
+        
         for (int i = 0; i < conditionList.size(); ++i) {
             vector<PageIndexType> nextResult;
             nextResult.clear();
