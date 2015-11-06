@@ -336,7 +336,7 @@ void CatalogManager::deleteIndex(string indexName)
         tableName="";                               //分割字符串
         attrName="";
         i=0;
-        while (s[i]!=0)
+        while (s[i]!=' ')
         {
             tableName=tableName+s[i];
             i++;
@@ -351,6 +351,8 @@ void CatalogManager::deleteIndex(string indexName)
             i++;
         }
         
+        printf("#%s#  @%s@  *%s*\n",indexName.c_str(), tableName.c_str(), attrName.c_str());
+        printf("~%s~\n",primaryKey(tableName).c_str());
         if (indexName == tableName+attrName && primaryKey(tableName) == attrName)
         {
             printf("Failed to delete index %s. Default index on primary key cannot be deleted.\n",indexName.c_str());
