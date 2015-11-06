@@ -234,12 +234,13 @@ where_clause	: WHERE condition	{;}
 |/* empty */ {;}
 ;
 
-condition	: attrname operation number
+condition	: attrname operation fnum
 {
     sql.condNum++;
     sql.condCont[sql.condNum].attrName=tmpAttrName;
     sql.condCont[sql.condNum].op=$2;
     sql.condCont[sql.condNum].attrValueFlo=$3;
+    sql.condCont[sql.condNum].attrType="FLOAT";
 }
 | attrname operation STRING
 {
@@ -247,6 +248,16 @@ condition	: attrname operation number
     sql.condCont[sql.condNum].attrName=tmpAttrName;
     sql.condCont[sql.condNum].op=$2;
     sql.condCont[sql.condNum].attrValueStr=$3;
+    sql.condCont[sql.condNum].attrType="CHAR";
+}
+| attrname operation intnum
+{
+    sql.condNum++;
+    sql.condCont[sql.condNum].attrName=tmpAttrName;
+    sql.condCont[sql.condNum].op=$2;
+    sql.condCont[sql.condNum].attrValueFlo=$3;
+    sql.condCont[sql.condNum].attrValueInt=$3;
+    sql.condCont[sql.condNum].attrType="INT";
 }
 | condition ANND condition	{;}
 ;
