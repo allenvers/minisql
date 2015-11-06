@@ -314,7 +314,7 @@ bool API::selectRecord(SQLcommand sql)
                     indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::CHAR, conditionList[i].length);
                 }
                 auto searchResult = indexTree->searchKeyForPagePointer(conditionList[i]);
-                if (searchResult != UNDEFINEED_PAGE_NUM)
+                if (searchResult != UNDEFINEED_PAGE_NUM && find(result.begin(), result.end(), searchResult) != result.end())
                     nextResult.push_back(searchResult);
                 
                 delete indexTree;
@@ -460,7 +460,7 @@ bool API::deleteRecord(SQLcommand sql)
                     indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::CHAR, conditionList[i].length);
                 }
                 auto searchResult = indexTree->searchKeyForPagePointer(conditionList[i]);
-                if (searchResult != UNDEFINEED_PAGE_NUM)
+                if (searchResult != UNDEFINEED_PAGE_NUM && find(result.begin(), result.end(), searchResult) != result.end())
                     nextResult.push_back(searchResult);
                 
                 delete indexTree;
