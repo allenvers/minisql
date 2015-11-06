@@ -67,6 +67,9 @@ void Table::deleteTuple(PageIndexType index)
 
 	PageIndexType next = page.readnext();
 	PageIndexType before = page.readbefore();
+    if (before == 1) {
+        head = next;
+    }
 	if(next == UNDEFINEED_PAGE_NUM)
 	{
 		RecordPage beforepage;
