@@ -233,10 +233,7 @@ bool CatalogManager::indexExisted(string indexName)
     if (s=="")
         return 0;
     else
-    {
-        printf("Index name existed! The table is on %s.\n",s.c_str());
         return 1;
-    }
 }
 
 string CatalogManager::indexLocation(string indexName)

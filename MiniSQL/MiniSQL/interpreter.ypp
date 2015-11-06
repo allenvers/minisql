@@ -358,7 +358,7 @@ void yyerror(const char *s)
     if (strcmp(yytext,";") && strcmp(s,"Unterminated string"))
         while ((c=yylex())!=';');
 
-    if (strcmp(s,"Char is defined too long or too short!"))
+    if (strcmp(s,"Char is defined too long or too short!") && strcmp(s,"Too many attributes!"))
         printf("%s near '%s'\n",s,tmp2.c_str());
     else
         printf("%s\n",s);
