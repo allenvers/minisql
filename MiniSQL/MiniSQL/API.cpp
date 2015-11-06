@@ -262,7 +262,7 @@ bool API::selectRecord(SQLcommand sql)
     
     
     for (auto itr: cm.tableInformation(sql.tableName)) {
-        printf("%s\t\t", itr.attrName.c_str());
+        printf("%s\t\t\t", itr.attrName.c_str());
     }
     cout << endl;
     

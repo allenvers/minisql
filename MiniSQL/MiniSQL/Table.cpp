@@ -320,23 +320,24 @@ void Table::printinfo(PageIndexType index)
 
     for(int i = 0; i < tuple.list.size(); i++)
     {
-
         switch(tuple.list[i].type)
         {
         case AttributeType::CHAR:
-            cout << tuple.list[i].chardata << "\t\t";
+            for (int j = 0; j < tuple.list[i].length; j++)
+                cout << tuple.list[i].chardata[j];
             break;
         case AttributeType::FLOAT:
-            cout << tuple.list[i].floatdata << "\t\t";
+            cout << tuple.list[i].floatdata;
             break;
         case AttributeType::INT:
-            cout << tuple.list[i].intdata << "\t\t";
+            cout << tuple.list[i].intdata;
             break;
         case AttributeType::UNDEFINED:;
         default:
             cout << "Type error!" ;
             break;
         }
+        cout << "\t\t\t";
     }
     cout << endl;
 
