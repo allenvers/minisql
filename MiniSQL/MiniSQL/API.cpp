@@ -159,6 +159,8 @@ bool API::dropIndex(SQLcommand sql)
 bool API::createIndex(SQLcommand sql)
 {
 //    printf("---%s %s %s\n",sql.indexName.c_str(), sql.tableName.c_str(), sql.attrName.c_str());
+    
+    clock_t begin = clock();
     printf("----API::createIndex----\n");
     CatalogManager catalog;
     if (catalog.insertIndex(sql.tableName, sql.attrName, sql.indexName))
@@ -185,6 +187,7 @@ bool API::createIndex(SQLcommand sql)
             delete indexTree;
         }
     }
+    printf("Command running time: %f second\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
 
     return 1;
 }
