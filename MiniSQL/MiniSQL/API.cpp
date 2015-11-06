@@ -84,8 +84,50 @@ bool API::insertRecord(SQLcommand sql)
     //vec[i].attrName可以读列名
     
     Table table(sql.tableName);
-    table.insertTuple(vec);
     
+    for (int i = 0; i < vec.size(); ++i) {
+        if (catalog.attrUnique(sql.tableName, vec[i].attrName)) {
+            if (catalog.indexNum(sql.tableName, vec[i].attrName) > 0) {
+                BPTree *indexTree;
+                if (vec[i].type == AttributeType::INT) {
+                    indexTree = new BPTree(sql.tableName, vec[i].attrName, BPTreeKeyType::INT, vec[i].length);
+                } else if (vec[i].type == AttributeType::FLOAT) {
+                    indexTree = new BPTree(sql.tableName, vec[i].attrName, BPTreeKeyType::FLOAT, vec[i].length);
+                } else {
+                    indexTree = new BPTree(sql.tableName, vec[i].attrName, BPTreeKeyType::CHAR, vec[i].length);
+                }
+                if ((*indexTree).searchKeyForPagePointer(vec[i]) != UNDEFINEED_PAGE_NUM) {
+                    printf("Conflict on attribute %s, this attribute should be unique!\n", vec[i].attrName.c_str());
+                    delete indexTree;
+                    return 0;
+                }
+                delete indexTree;
+            } else {
+                if (!table.scanEqual(i, vec[i]).empty()) {
+                    printf("Conflict on attribute %s, this attribute should be unique!\n", vec[i].attrName.c_str());
+                    return 0;
+                }
+            }
+        }
+    }
+    
+    
+    PageIndexType insertedPage = table.insertTuple(vec);
+    
+    for (int i = 0; i < vec.size(); ++i) {
+        if (catalog.indexNum(sql.tableName, vec[i].attrName) > 0) {
+            BPTree *indexTree;
+            if (vec[i].type == AttributeType::INT) {
+                indexTree = new BPTree(sql.tableName, vec[i].attrName, BPTreeKeyType::INT, vec[i].length);
+            } else if (vec[i].type == AttributeType::FLOAT) {
+                indexTree = new BPTree(sql.tableName, vec[i].attrName, BPTreeKeyType::FLOAT, vec[i].length);
+            } else {
+                indexTree = new BPTree(sql.tableName, vec[i].attrName, BPTreeKeyType::CHAR, vec[i].length);
+            }
+            (*indexTree).insertKeyPointerPair(vec[i], insertedPage);
+            delete indexTree;
+        }
+    }
     
     printf("Command running time: %f second\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
     return 1;
@@ -122,6 +164,26 @@ bool API::createIndex(SQLcommand sql)
     if (catalog.insertIndex(sql.tableName, sql.attrName, sql.indexName))
     {
         //catalog创建成功，调用indexManager的接口真正建索引
+        if (catalog.indexNum(sql.tableName, sql.attrName) == 1) {
+            Table table(sql.tableName);
+            BPTree *indexTree;
+            int i;
+            auto vec = catalog.tableInformation(sql.tableName);
+            for (i = 0; i < vec.size(); ++i) {
+                if (vec[i].attrName == sql.attrName) break;
+            }
+            if (vec[i].type == AttributeType::INT) {
+                indexTree = new BPTree(sql.tableName, vec[i].attrName, BPTreeKeyType::INT, vec[i].length);
+            } else if (vec[i].type == AttributeType::FLOAT) {
+                indexTree = new BPTree(sql.tableName, vec[i].attrName, BPTreeKeyType::FLOAT, vec[i].length);
+            } else {
+                indexTree = new BPTree(sql.tableName, vec[i].attrName, BPTreeKeyType::CHAR, vec[i].length);
+            }
+            for (auto itr: table.getAll(i)) {
+                indexTree->insertKeyPointerPair(itr.first, itr.second);
+            }
+            delete indexTree;
+        }
     }
 
     return 1;
@@ -142,18 +204,136 @@ bool API::selectRecord(SQLcommand sql)
 //    printf("---%d\n",sql.condNum);
 //    printf("---%s %s %f\n", sql.condCont[1].attrName.c_str(), sql.condCont[1].op.c_str(), sql.condCont[1].attrValueFlo);
     
+    clock_t begin = clock();
     printf("----API::selectRecord----\n");
-    //飞哥加油么么哒~
+    
     CatalogManager cm;
+    if (!cm.tableExisted(sql.tableName)) {
+        printf("Table %s doesn't exist! Select failed!\n", sql.tableName.c_str());
+        return 0;
+    }
+    
+    vector<Attribute> conditionList;
+    conditionList.clear();
+    vector<string> relationList;
+    relationList.clear();
+    
+    for (int i = 1; i <= sql.condNum; i++) {
+        bool exist = false;
+        for (auto Attribute: cm.tableInformation(sql.tableName)) {
+            if (Attribute.attrName == sql.condCont[i].attrName) {
+                exist = true;
+                if (sql.condCont[i].attrType == "INT") {
+                    if (Attribute.type == AttributeType::CHAR) {
+                        printf("In where clause, the argument provided for attribute %s doesn't match its type, select failed!\n", Attribute.attrName.c_str());
+                        return 0;
+                    } else if (Attribute.type == AttributeType::INT) {
+                        Attribute.intdata = sql.condCont[i].attrValueInt;
+                    } else if (Attribute.type == AttributeType::FLOAT) {
+                        Attribute.floatdata = (float)sql.condCont[i].attrValueInt;
+                    }
+                } else if (sql.condCont[i].attrType == "FLOAT") {
+                    if (Attribute.type != AttributeType::FLOAT) {
+                        printf("In where clause, the argument provided for attribute %s doesn't match its type, select failed!\n", Attribute.attrName.c_str());
+                        return 0;
+                    }
+                    Attribute.floatdata = sql.condCont[i].attrValueFlo;
+                } else if (sql.condCont[i].attrType == "CHAR") {
+                    if (Attribute.type != AttributeType::CHAR) {
+                        printf("In where clause, the argument provided for attribute %s doesn't match its type, select failed!\n", Attribute.attrName.c_str());
+                        return 0;
+                    }
+                    if (Attribute.length < sql.condCont[i].attrValueStr.length()) {
+                        printf("In where clause, the argument provided for attribute %s is too long, select failed!\n", Attribute.attrName.c_str());
+                        return 0;
+                    }
+                    memset(Attribute.chardata, 0, Attribute.length);
+                    memcpy(Attribute.chardata, sql.condCont[i].attrValueStr.c_str(), sql.condCont[i].attrValueStr.length());
+                }
+                cout << sql.condCont[i].attrType << endl;
+                conditionList.push_back(Attribute);
+                relationList.push_back(sql.condCont[i].op);
+            }
+        }
+        if (!exist) {
+            printf("Attribute named %s doesn't exist! Select failed!\n", sql.condCont[i].attrName.c_str());
+            return 0;
+        }
+    }
+    
+    
     for (auto itr: cm.tableInformation(sql.tableName)) {
-        printf("%s\t", itr.attrName.c_str());
+        printf("%s\t\t", itr.attrName.c_str());
     }
     cout << endl;
     
     Table table(sql.tableName);
-    for (auto itr: table.getAll()) {
-        table.printinfo(itr);
+    
+    if (sql.condNum == 0) {
+        for (auto itr: table.getAll()) {
+            table.printinfo(itr);
+        }
+    } else {
+        vector<PageIndexType> result = table.getAll();
+        
+        for (int i = 0; i < conditionList.size(); ++i) {
+            vector<PageIndexType> nextResult;
+            nextResult.clear();
+            
+            auto tableInfo = cm.tableInformation(sql.tableName);
+            int attributeIndex;
+            for (attributeIndex = 0; attributeIndex < tableInfo.size(); ++attributeIndex)
+                if (tableInfo[attributeIndex].attrName == conditionList[i].attrName) break;
+            
+            if ((relationList[i] == "=") && (cm.indexNum(sql.tableName, conditionList[i].attrName) > 0)) {
+                BPTree *indexTree;
+                if (conditionList[i].type == AttributeType::INT) {
+                    indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::INT, conditionList[i].length);
+                } else if (conditionList[i].type == AttributeType::FLOAT) {
+                    indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::FLOAT, conditionList[i].length);
+                } else {
+                    indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::CHAR, conditionList[i].length);
+                }
+                auto searchResult = indexTree->searchKeyForPagePointer(conditionList[i]);
+                if (searchResult != UNDEFINEED_PAGE_NUM)
+                    nextResult.push_back(searchResult);
+                
+                delete indexTree;
+            } else {
+                for (auto itr: result) {
+                    auto currentAttributes = table.getTupleAtPage(itr);
+                    bool ok = false;
+                    if (relationList[i] == "=") {
+                        if (conditionList[i] == currentAttributes[attributeIndex])
+                            ok = true;
+                    } else if (relationList[i] == "<>") {
+                        if (conditionList[i] != currentAttributes[attributeIndex])
+                            ok = true;
+                    } else if (relationList[i] == "<") {
+                        if (conditionList[i] < currentAttributes[attributeIndex])
+                            ok = true;
+                    } else if (relationList[i] == "<=") {
+                        if (conditionList[i] <= currentAttributes[attributeIndex])
+                            ok = true;
+                    } else if (relationList[i] == ">") {
+                        if (conditionList[i] > currentAttributes[attributeIndex])
+                            ok = true;
+                    } else if (relationList[i] == ">=") {
+                        if (conditionList[i] >= currentAttributes[attributeIndex])
+                            ok = true;
+                    }
+                    if (ok)
+                        nextResult.push_back(itr);
+                }
+            }
+            result = nextResult;
+        }
+        
+        for (auto itr: result) {
+            table.printinfo(itr);
+        }
     }
+    printf("Command running time: %f second\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
     return 1;
 }
 

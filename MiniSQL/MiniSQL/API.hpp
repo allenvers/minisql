@@ -17,6 +17,7 @@
 #include <vector>
 #include <cstdio>
 #include "Table.hpp"
+#include "BPTree.hpp"
 
 
 class API

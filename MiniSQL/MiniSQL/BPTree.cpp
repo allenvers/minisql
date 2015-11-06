@@ -440,6 +440,7 @@ PageIndexType BPTree::searchKeyForPagePointerInNode(BPTreeKey key, BPTreeNode no
             }
         }
     }
+    return UNDEFINEED_PAGE_NUM;
     assert(false); // Error
 }
 

@@ -25,6 +25,31 @@ BPTreeKey::BPTreeKey(const BPTreeKey &key) {
     type = key.type;
 }
 
+BPTreeKey::BPTreeKey(const Attribute &attri) {
+    keyLen = attri.length;
+    intData = attri.intdata;
+    floatData = attri.floatdata;
+    memcpy(charData, attri.chardata, keyLen);
+    memcpy(rawData, attri.rawdata, 256);
+    switch (attri.type) {
+        case AttributeType::INT :
+            type = BPTreeKeyType::INT;
+            break;
+        
+        case AttributeType::FLOAT :
+            type = BPTreeKeyType::FLOAT;
+            break;
+            
+        case AttributeType::CHAR :
+            type = BPTreeKeyType::CHAR;
+            break;
+            
+        default:
+            type = BPTreeKeyType::UNDEFINED;
+            break;
+    }
+}
+
 BPTreeKey::~BPTreeKey() {
 }
 

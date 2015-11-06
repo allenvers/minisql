@@ -11,7 +11,7 @@
 #include "BufferManager.hpp"
 #include "CatalogManager.hpp"
 #include "IndexCatalogPage.hpp"
-#include "TableInfo.cpp"
+#include "TableInfo.hpp"
 #include "BPTree.hpp"
 #include "Table.hpp"
 #include "y.tab.h"

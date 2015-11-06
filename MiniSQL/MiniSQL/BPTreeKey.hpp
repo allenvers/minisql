@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <cmath>
+#include "Attribute.hpp"
 
 using namespace std;
 
@@ -30,6 +31,7 @@ class BPTreeKey {
 public:
     BPTreeKey();
     BPTreeKey(const BPTreeKey &key);
+    BPTreeKey(const Attribute &attri);
     ~BPTreeKey();
     
     int compare(const BPTreeKey &key);
