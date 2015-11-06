@@ -220,38 +220,37 @@ bool API::selectRecord(SQLcommand sql)
     
     for (int i = 1; i <= sql.condNum; i++) {
         bool exist = false;
-        for (auto Attribute: cm.tableInformation(sql.tableName)) {
-            if (Attribute.attrName == sql.condCont[i].attrName) {
+        for (auto attribute: cm.tableInformation(sql.tableName)) {
+            if (attribute.attrName == sql.condCont[i].attrName) {
                 exist = true;
                 if (sql.condCont[i].attrType == "INT") {
-                    if (Attribute.type == AttributeType::CHAR) {
-                        printf("In where clause, the argument provided for attribute %s doesn't match its type, select failed!\n", Attribute.attrName.c_str());
+                    if (attribute.type == AttributeType::CHAR) {
+                        printf("In where clause, the argument provided for attribute %s doesn't match its type, select failed!\n", attribute.attrName.c_str());
                         return 0;
-                    } else if (Attribute.type == AttributeType::INT) {
-                        Attribute.intdata = sql.condCont[i].attrValueInt;
-                    } else if (Attribute.type == AttributeType::FLOAT) {
-                        Attribute.floatdata = (float)sql.condCont[i].attrValueInt;
+                    } else if (attribute.type == AttributeType::INT) {
+                        attribute.intdata = sql.condCont[i].attrValueInt;
+                    } else if (attribute.type == AttributeType::FLOAT) {
+                        attribute.floatdata = (float)sql.condCont[i].attrValueInt;
                     }
                 } else if (sql.condCont[i].attrType == "FLOAT") {
-                    if (Attribute.type != AttributeType::FLOAT) {
-                        printf("In where clause, the argument provided for attribute %s doesn't match its type, select failed!\n", Attribute.attrName.c_str());
+                    if (attribute.type != AttributeType::FLOAT) {
+                        printf("In where clause, the argument provided for attribute %s doesn't match its type, select failed!\n", attribute.attrName.c_str());
                         return 0;
                     }
-                    Attribute.floatdata = sql.condCont[i].attrValueFlo;
+                    attribute.floatdata = sql.condCont[i].attrValueFlo;
                 } else if (sql.condCont[i].attrType == "CHAR") {
-                    if (Attribute.type != AttributeType::CHAR) {
-                        printf("In where clause, the argument provided for attribute %s doesn't match its type, select failed!\n", Attribute.attrName.c_str());
+                    if (attribute.type != AttributeType::CHAR) {
+                        printf("In where clause, the argument provided for attribute %s doesn't match its type, select failed!\n", attribute.attrName.c_str());
                         return 0;
                     }
-                    if (Attribute.length < sql.condCont[i].attrValueStr.length()) {
-                        printf("In where clause, the argument provided for attribute %s is too long, select failed!\n", Attribute.attrName.c_str());
+                    if (attribute.length < sql.condCont[i].attrValueStr.length()) {
+                        printf("In where clause, the argument provided for attribute %s is too long, select failed!\n", attribute.attrName.c_str());
                         return 0;
                     }
-                    memset(Attribute.chardata, 0, Attribute.length);
-                    memcpy(Attribute.chardata, sql.condCont[i].attrValueStr.c_str(), sql.condCont[i].attrValueStr.length());
+                    memset(attribute.chardata, 0, attribute.length);
+                    memcpy(attribute.chardata, sql.condCont[i].attrValueStr.c_str(), sql.condCont[i].attrValueStr.length());
                 }
-                cout << sql.condCont[i].attrType << endl;
-                conditionList.push_back(Attribute);
+                conditionList.push_back(attribute);
                 relationList.push_back(sql.condCont[i].op);
             }
         }
@@ -310,16 +309,16 @@ bool API::selectRecord(SQLcommand sql)
                         if (conditionList[i] != currentAttributes[attributeIndex])
                             ok = true;
                     } else if (relationList[i] == "<") {
-                        if (conditionList[i] < currentAttributes[attributeIndex])
-                            ok = true;
-                    } else if (relationList[i] == "<=") {
-                        if (conditionList[i] <= currentAttributes[attributeIndex])
-                            ok = true;
-                    } else if (relationList[i] == ">") {
                         if (conditionList[i] > currentAttributes[attributeIndex])
                             ok = true;
-                    } else if (relationList[i] == ">=") {
+                    } else if (relationList[i] == "<=") {
                         if (conditionList[i] >= currentAttributes[attributeIndex])
+                            ok = true;
+                    } else if (relationList[i] == ">") {
+                        if (conditionList[i] < currentAttributes[attributeIndex])
+                            ok = true;
+                    } else if (relationList[i] == ">=") {
+                        if (conditionList[i] <= currentAttributes[attributeIndex])
                             ok = true;
                     }
                     if (ok)
@@ -342,7 +341,151 @@ bool API::deleteRecord(SQLcommand sql)
 //    printf("---%d\n",sql.condNum);
 //    printf("---%s %s %s\n",sql.condCont[2].attrName.c_str(), sql.condCont[2].op.c_str(), sql.condCont[2].attrValueStr.c_str());
     
+    clock_t begin = clock();
     printf("----API::deleteRecord----\n");
-    //飞哥加油么么哒~
+    CatalogManager cm;
+    if (!cm.tableExisted(sql.tableName)) {
+        printf("Table %s doesn't exist! Select failed!\n", sql.tableName.c_str());
+        return 0;
+    }
+    
+    vector<Attribute> conditionList;
+    conditionList.clear();
+    vector<string> relationList;
+    relationList.clear();
+    
+    for (int i = 1; i <= sql.condNum; i++) {
+        bool exist = false;
+        for (auto Attribute: cm.tableInformation(sql.tableName)) {
+            if (Attribute.attrName == sql.condCont[i].attrName) {
+                exist = true;
+                if (sql.condCont[i].attrType == "INT") {
+                    if (Attribute.type == AttributeType::CHAR) {
+                        printf("In where clause, the argument provided for attribute %s doesn't match its type, delete failed!\n", Attribute.attrName.c_str());
+                        return 0;
+                    } else if (Attribute.type == AttributeType::INT) {
+                        Attribute.intdata = sql.condCont[i].attrValueInt;
+                    } else if (Attribute.type == AttributeType::FLOAT) {
+                        Attribute.floatdata = (float)sql.condCont[i].attrValueInt;
+                    }
+                } else if (sql.condCont[i].attrType == "FLOAT") {
+                    if (Attribute.type != AttributeType::FLOAT) {
+                        printf("In where clause, the argument provided for attribute %s doesn't match its type, delete failed!\n", Attribute.attrName.c_str());
+                        return 0;
+                    }
+                    Attribute.floatdata = sql.condCont[i].attrValueFlo;
+                } else if (sql.condCont[i].attrType == "CHAR") {
+                    if (Attribute.type != AttributeType::CHAR) {
+                        printf("In where clause, the argument provided for attribute %s doesn't match its type, delete failed!\n", Attribute.attrName.c_str());
+                        return 0;
+                    }
+                    if (Attribute.length < sql.condCont[i].attrValueStr.length()) {
+                        printf("In where clause, the argument provided for attribute %s is too long, delete failed!\n", Attribute.attrName.c_str());
+                        return 0;
+                    }
+                    memset(Attribute.chardata, 0, Attribute.length);
+                    memcpy(Attribute.chardata, sql.condCont[i].attrValueStr.c_str(), sql.condCont[i].attrValueStr.length());
+                }
+                conditionList.push_back(Attribute);
+                relationList.push_back(sql.condCont[i].op);
+            }
+        }
+        if (!exist) {
+            printf("Attribute named %s doesn't exist! Delete failed!\n", sql.condCont[i].attrName.c_str());
+            return 0;
+        }
+    }
+    
+    Table table(sql.tableName);
+    
+    vector<PageIndexType> result = table.getAll();
+    
+    if (sql.condNum != 0) {
+        for (int i = 0; i < conditionList.size(); ++i) {
+            vector<PageIndexType> nextResult;
+            nextResult.clear();
+            
+            auto tableInfo = cm.tableInformation(sql.tableName);
+            int attributeIndex;
+            for (attributeIndex = 0; attributeIndex < tableInfo.size(); ++attributeIndex)
+                if (tableInfo[attributeIndex].attrName == conditionList[i].attrName) break;
+            
+            if ((relationList[i] == "=") && (cm.indexNum(sql.tableName, conditionList[i].attrName) > 0)) {
+                BPTree *indexTree;
+                if (conditionList[i].type == AttributeType::INT) {
+                    indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::INT, conditionList[i].length);
+                } else if (conditionList[i].type == AttributeType::FLOAT) {
+                    indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::FLOAT, conditionList[i].length);
+                } else {
+                    indexTree = new BPTree(sql.tableName, conditionList[i].attrName, BPTreeKeyType::CHAR, conditionList[i].length);
+                }
+                auto searchResult = indexTree->searchKeyForPagePointer(conditionList[i]);
+                if (searchResult != UNDEFINEED_PAGE_NUM)
+                    nextResult.push_back(searchResult);
+                
+                delete indexTree;
+            } else {
+                for (auto itr: result) {
+                    auto currentAttributes = table.getTupleAtPage(itr);
+                    bool ok = false;
+                    if (relationList[i] == "=") {
+                        if (conditionList[i] == currentAttributes[attributeIndex])
+                            ok = true;
+                    } else if (relationList[i] == "<>") {
+                        if (conditionList[i] != currentAttributes[attributeIndex])
+                            ok = true;
+                    } else if (relationList[i] == "<") {
+                        if (conditionList[i] > currentAttributes[attributeIndex])
+                            ok = true;
+                    } else if (relationList[i] == "<=") {
+                        if (conditionList[i] >= currentAttributes[attributeIndex])
+                            ok = true;
+                    } else if (relationList[i] == ">") {
+                        if (conditionList[i] < currentAttributes[attributeIndex])
+                            ok = true;
+                    } else if (relationList[i] == ">=") {
+                        if (conditionList[i] <= currentAttributes[attributeIndex])
+                            ok = true;
+                    }
+                    if (ok)
+                        nextResult.push_back(itr);
+                }
+            }
+            result = nextResult;
+        }
+    }
+    
+    if (!result.empty()) {
+        auto tableInfo = cm.tableInformation(sql.tableName);
+        for (auto attribute: cm.tableInformation(sql.tableName)) {
+            if (cm.indexNum(sql.tableName, attribute.attrName) > 0) {
+                int attributeIndex;
+                for (attributeIndex = 0; attributeIndex < tableInfo.size(); ++attributeIndex)
+                    if (tableInfo[attributeIndex].attrName == attribute.attrName) break;
+                
+                BPTree *indexTree = nullptr;
+                if (attribute.type == AttributeType::INT) {
+                    indexTree = new BPTree(sql.tableName, attribute.attrName, BPTreeKeyType::INT, attribute.length);
+                } else if (attribute.type == AttributeType::FLOAT) {
+                    indexTree = new BPTree(sql.tableName, attribute.attrName, BPTreeKeyType::FLOAT, attribute.length);
+                } else if (attribute.type == AttributeType::CHAR){
+                    indexTree = new BPTree(sql.tableName, attribute.attrName, BPTreeKeyType::CHAR, attribute.length);
+                }
+                
+                for (auto itr: result) {
+                    indexTree->deleteKey(table.getTupleAtPage(itr)[attributeIndex]);
+                }
+                
+                delete indexTree;
+            }
+        }
+        for (auto itr: result) {
+            table.deleteTuple(itr);
+        }
+    }
+    
+    printf("%lu record deleted\n", result.size());
+    printf("Command running time: %f second\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
+    
     return 1;
 }
