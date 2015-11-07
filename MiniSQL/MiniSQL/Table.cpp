@@ -330,7 +330,7 @@ void Table::printinfo(PageIndexType index)
                 cout << tuple.list[i].chardata[j];
             break;
         case AttributeType::FLOAT:
-            cout << tuple.list[i].floatdata;
+            printf("%.2f", tuple.list[i].floatdata);
             break;
         case AttributeType::INT:
             cout << tuple.list[i].intdata;

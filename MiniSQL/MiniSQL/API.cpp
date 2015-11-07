@@ -272,9 +272,11 @@ bool API::selectRecord(SQLcommand sql)
     Table table(sql.tableName);
     
     if (sql.condNum == 0) {
-        for (auto itr: table.getAll()) {
+        auto result = table.getAll();
+        for (auto itr: result) {
             table.printinfo(itr);
         }
+        printf("Total %lu records selected\n", result.size());
     } else {
         vector<PageIndexType> result = table.getAll();
         
@@ -354,6 +356,7 @@ bool API::selectRecord(SQLcommand sql)
         for (auto itr: result) {
             table.printinfo(itr);
         }
+        printf("Total %lu records selected", result.size());
     }
     printf("Command running time: %f second\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
     return 1;
