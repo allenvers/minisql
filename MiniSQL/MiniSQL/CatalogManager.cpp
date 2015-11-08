@@ -383,12 +383,15 @@ void CatalogManager::deleteIndex(string indexName)
             i++;
         }
         
+        buffer.writePage(indexPage);
         catalog.tableName = tableName;              //在catalogPage里面的对应属性上修改索引总数
+        buffer.readPage(catalog);
         num = (int)catalog.pageData[0];
-        for (i=0; i<num; i++)
+        for (i=0; i<num; i++) {
             if (catalog.readAttrName(i) == attrName)
             {
                 catalog.modifyAttrIndexNum(i,-1);
+                buffer.writePage(catalog);
                 if (catalog.readAttrIndexNum(i)==0)
                 {
                     BufferManager bm;
@@ -399,6 +402,7 @@ void CatalogManager::deleteIndex(string indexName)
 
                 break;
             }
+        }
 
         printf("Deleted index %s successfully!\n",indexName.c_str());
     }
