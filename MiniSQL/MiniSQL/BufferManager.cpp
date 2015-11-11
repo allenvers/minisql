@@ -292,6 +292,7 @@ bool BufferManager::readPage(Page &page) {
         }
     } else {
         page = cachePages[pageIndex];
+        addCountersExceptCurrent(pageIndex);
         return true;
     }
     assert(false);
@@ -328,6 +329,7 @@ bool BufferManager::writePage(Page &page) {
     } else {
         cachePages[pageIndex] = page;
         isDirty[pageIndex] = true;
+        addCountersExceptCurrent(pageIndex);
         return true;
     }
     assert(false);
