@@ -1,5 +1,7 @@
 Database-System-Design_miniSQL
 ==============================
+DB course project,
+Implemented by @imzyy, me, and Jerry Wan.
 
 
 And Here is the requirment of miniSQL project:
